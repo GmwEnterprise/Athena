@@ -7,12 +7,13 @@
 ## Development Environment
 
 - 开发环境运行在 **WSL2 (Linux)** 中，所有代码编辑、Git 操作在 WSL2 内完成
-- 项目编译、打包、运行等 Windows 相关操作通过 WSL2 调用 Windows 侧 PowerShell 执行：
+- 项目编译、打包、运行等 Windows 相关操作通过 WSL2 调用 Windows 侧 PowerShell 7 (`pwsh.exe`) 执行：
   ```bash
-  # 示例：在 WSL2 中调用 Windows PowerShell 执行命令
-  powershell.exe -Command "pnpm tauri dev"
-  powershell.exe -Command "pnpm tauri build"
+  # 示例：在 WSL2 中调用 Windows PowerShell 7 执行命令
+  pwsh.exe -Command "pnpm tauri dev"
+  pwsh.exe -Command "pnpm tauri build"
   ```
+  **注意**：含 `$` 变量的 pwsh 命令在 bash 中必须用单引号包裹，否则 bash 会展开变量导致错误。
 - 所有文件路径在 WSL2 中使用 Linux 格式（`/mnt/c/...`），传递给 PowerShell 时需转换为 Windows 格式（`C:\...`）
 
 ## Code Style (Mandatory)
@@ -70,9 +71,9 @@ cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
 # Rust 格式化检查
 cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 
-# 编译检查（通过 PowerShell）
-powershell.exe -Command "cd C:\path\to\Athena; pnpm tauri build --debug"
+# 编译检查（通过 PowerShell 7）
+pwsh.exe -Command "cd C:\path\to\Athena; pnpm tauri build --debug"
 
-# 运行开发模式（通过 PowerShell）
-powershell.exe -Command "cd C:\path\to\Athena; pnpm tauri dev"
+# 运行开发模式（通过 PowerShell 7）
+pwsh.exe -Command "cd C:\path\to\Athena; pnpm tauri dev"
 ```
