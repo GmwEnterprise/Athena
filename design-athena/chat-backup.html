@@ -1,0 +1,2283 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>对话 · Athena</title>
+  <style>
+    :root {
+      --bg:           #121212;
+      --surface:      #181818;
+      --surface-warm: #1f1f1f;
+      --fg:   #ffffff;
+      --fg-2: #fdfdfd;
+      --muted: #b3b3b3;
+      --meta:  #cbcbcb;
+      --border:      #4d4d4d;
+      --border-soft: rgba(255, 255, 255, 0.1);
+      --accent:        #1ed760;
+      --accent-on:     #000000;
+      --accent-hover:  #1db954;
+      --accent-active: color-mix(in oklab, #1ed760, black 10%);
+      --success: #1ed760;
+      --warn:    #ffa42b;
+      --danger:  #f3727f;
+      --font-display: "SpotifyMixUITitle", "CircularSp", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-body:    "SpotifyMixUI", "CircularSp", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono:    "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+      --text-xs: 10px;
+      --text-sm: 12px;
+      --text-base: 16px;
+      --radius-sm: 9999px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-pill: 9999px;
+      --elev-raised: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+      --elev-modal: rgba(0, 0, 0, 0.5) 0px 8px 24px;
+      --motion-fast: 150ms;
+      --motion-base: 200ms;
+      --ease-standard: ease;
+      --sidebar-w: 280px;
+      --code-bg: #1a1a1a;
+      --code-fg: #e0e0e0;
+      --code-keyword: #1ed760;
+      --code-string: #a8d8a8;
+      --code-number: #ffa42b;
+      --code-func: #87b9d9;
+      --code-comment: #6b6b6b;
+      --code-type: #b8a0d0;
+      --focus-ring: 0 0 0 3px rgba(30, 215, 96, 0.4);
+    }
+
+    [data-theme="light"] {
+      --bg:           #f8f8f8;
+      --surface:      #ffffff;
+      --surface-warm: #f0f0f0;
+      --fg:   #121212;
+      --fg-2: #1a1a1a;
+      --muted: #6b6b6b;
+      --meta:  #5c5c5c;
+      --border:      #d4d4d4;
+      --border-soft: rgba(0, 0, 0, 0.08);
+      --accent:        #1ed760;
+      --accent-on:     #000000;
+      --accent-hover:  #1db954;
+      --accent-active: color-mix(in oklab, #1ed760, black 10%);
+      --success: #1ed760;
+      --warn:    #e8940a;
+      --danger:  #d9364e;
+      --elev-raised: rgba(0, 0, 0, 0.06) 0px 2px 8px;
+      --elev-modal: rgba(0, 0, 0, 0.12) 0px 8px 24px;
+      --focus-ring: 0 0 0 3px rgba(30, 215, 96, 0.3);
+      --code-bg: #f0f0f2;
+      --code-fg: #242424;
+      --code-keyword: #0d8a3e;
+      --code-string: #2e7d32;
+      --code-number: #c47600;
+      --code-func: #1565c0;
+      --code-comment: #9e9e9e;
+      --code-type: #7b1fa2;
+    }
+    [data-theme="light"] .code-block-header {
+      background: rgba(0, 0, 0, 0.04);
+      color: rgba(0, 0, 0, 0.45);
+    }
+    [data-theme="light"] .code-block-header .copy-btn { color: rgba(0, 0, 0, 0.4); }
+    [data-theme="light"] .code-block-header .copy-btn:hover { color: #000; background: rgba(0, 0, 0, 0.06); }
+    [data-theme="light"] .tool-call { border-color: rgba(0, 0, 0, 0.1); }
+    [data-theme="light"] .tool-call-header { background: rgba(0, 0, 0, 0.03); }
+    [data-theme="light"] .tool-call-header.clickable:hover { background: rgba(0, 0, 0, 0.06); }
+    [data-theme="light"] .diff-line .diff-num { color: rgba(0, 0, 0, 0.3); background: rgba(0, 0, 0, 0.02); }
+    [data-theme="light"] .diff-line.add { background: rgba(63, 185, 80, 0.12); }
+    [data-theme="light"] .diff-line.add .diff-num { background: rgba(63, 185, 80, 0.08); }
+    [data-theme="light"] .diff-line.del { background: rgba(248, 81, 73, 0.1); }
+    [data-theme="light"] .diff-line.del .diff-num { background: rgba(248, 81, 73, 0.06); }
+    [data-theme="light"] .diff-line.hunk { background: rgba(30, 215, 96, 0.08); }
+    [data-theme="light"] .diff-line.hunk .diff-code { color: rgba(13, 138, 62, 0.7); }
+    [data-theme="light"] .modal-overlay { background: rgba(0, 0, 0, 0.3); }
+    [data-theme="light"] .modal-panel { box-shadow: rgba(0, 0, 0, 0.15) 0px 16px 48px; border-color: rgba(0,0,0,0.1); }
+    [data-theme="light"] .agent-badge.sub { background: rgba(0, 0, 0, 0.06); color: var(--muted); }
+    [data-theme="light"] .agent-badge.muted { background: rgba(0, 0, 0, 0.04); color: var(--muted); }
+    [data-theme="light"] .btn-secondary:hover { border-color: #121212; color: var(--fg); }
+    [data-theme="light"] .select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%236b6b6b'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    }
+    [data-theme="light"] .settings-modal-nav { border-right-color: rgba(0,0,0,0.08); }
+    [data-theme="light"] .settings-modal-content .setting-card { box-shadow: rgba(0,0,0,0.04) 0px 2px 8px; }
+    .theme-toggle {
+      width: 32px; height: 32px;
+      border: none; background: var(--surface-warm);
+      border-radius: 50%; color: var(--muted);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .theme-toggle:hover { background: var(--border-soft); color: var(--fg); }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.52;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-soft);
+      box-shadow: none;
+      position: relative;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-brand {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-brand svg { width: 22px; height: 22px; }
+    .topbar-nav { display: flex; gap: 20px; }
+    .topbar-nav a {
+      font-size: 13px;
+      color: var(--fg-2);
+      text-decoration: none;
+      padding: 4px 0;
+      border-bottom: 2px solid transparent;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .topbar-nav a:hover { color: var(--fg); }
+    .topbar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-right {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px;
+      color: var(--fg-2);
+    }
+
+    .agent-selector {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .agent-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px 5px 10px;
+      background: rgba(30, 215, 96, 0.1);
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .agent-trigger:hover {
+      background: rgba(30, 215, 96, 0.15);
+    }
+    .agent-trigger .agent-avatar {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-on);
+      display: grid; place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .agent-trigger .agent-arrow {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+    .tab-hint {
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--surface-warm);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      display: none;
+    }
+    @media (min-width: 900px) { .tab-hint { display: inline; } }
+
+    .agent-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 260px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-modal);
+      border: 1px solid var(--border-soft);
+      z-index: 30;
+      overflow: hidden;
+    }
+    .agent-dropdown.open { display: block; }
+    .agent-dropdown-head {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .agent-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .agent-dropdown-item:last-child { border-bottom: none; }
+    .agent-dropdown-item:hover { background: var(--surface-warm); }
+    .agent-dropdown-item.active {
+      background: rgba(30, 215, 96, 0.08);
+    }
+    .agent-dropdown-item .ad-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(30, 215, 96, 0.2);
+      color: var(--accent);
+      display: grid; place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .agent-dropdown-item.active .ad-avatar {
+      background: var(--accent);
+      color: var(--accent-on);
+    }
+    .agent-dropdown-item .ad-info { flex: 1; min-width: 0; }
+    .agent-dropdown-item .ad-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .agent-dropdown-item .ad-model {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .agent-dropdown-item .ad-check {
+      color: var(--accent);
+      display: none;
+    }
+    .agent-dropdown-item.active .ad-check { display: block; }
+
+    .token-panel {
+      position: relative;
+    }
+    .token-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: var(--surface-warm);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .token-trigger:hover { border-color: var(--accent); color: var(--fg); }
+    .token-trigger .tt-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .token-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 320px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-modal);
+      border: 1px solid var(--border-soft);
+      z-index: 30;
+      padding: 14px;
+    }
+    .token-dropdown.open { display: block; }
+
+    .token-dropdown .td-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .token-breakdown { margin-bottom: 10px; }
+    .tb-model-group {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .tb-model-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .tb-model-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tb-model-name .tb-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .tb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0 3px 12px;
+      font-size: 12px;
+    }
+    .tb-row .tb-label {
+      color: var(--muted);
+    }
+    .tb-row .tb-nums {
+      font-family: var(--font-mono);
+      color: var(--fg-2);
+      font-size: 12px;
+    }
+    .token-dropdown .td-bar {
+      height: 4px;
+      background: var(--border-soft);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .token-dropdown .td-bar .td-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width var(--motion-base) var(--ease-standard);
+    }
+    .token-dropdown .td-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .sidebar-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .sidebar-head .btn-new {
+      width: 100%;
+      padding: 10px;
+      background: var(--accent);
+      color: var(--accent-on);
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+      box-shadow: none;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+    }
+    .sidebar-head .btn-new:hover { background: var(--accent-hover); }
+
+    .conv-list { flex: 1; overflow-y: auto; padding: 8px; }
+    .conv-item {
+      padding: 10px 12px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: var(--motion-fast) var(--ease-standard);
+      position: relative;
+    }
+    .conv-item:hover { background: var(--surface-warm); }
+    .conv-item.active { background: var(--surface-warm); box-shadow: none; border-left: 3px solid var(--accent); }
+    .conv-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .conv-item-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex; gap: 8px;
+    }
+    .msg-model-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      margin-left: 0;
+      align-self: flex-start;
+      padding: 2px 8px;
+      background: rgba(30, 215, 96, 0.12);
+      color: var(--accent);
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .msg-model-label svg { width: 10px; height: 10px; opacity: 0.7; }
+    .token-summary-side {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--muted);
+    }
+
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages-inner {
+      max-width: 860px;
+      margin-inline: auto;
+    }
+
+    .msg {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .msg.user {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    .msg.user .msg-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .msg.user .msg-bubble {
+      padding: 10px 16px;
+      background: var(--accent);
+      color: var(--accent-on);
+      border-radius: var(--radius-lg);
+      border-bottom-right-radius: 4px;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+      box-shadow: none;
+    }
+    .msg.user .msg-time {
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.5);
+      margin-top: 4px;
+    }
+
+    .msg.assistant { align-items: flex-start; }
+    .msg.assistant .msg-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .msg.assistant .msg-content > *:first-child { margin-top: 0; }
+    .msg.assistant .msg-content > *:last-child { margin-bottom: 0; }
+
+    .msg.assistant .msg-content p {
+      margin: 8px 0;
+      line-height: 1.68;
+      font-size: 14px;
+    }
+    .msg.assistant .msg-content ul,
+    .msg.assistant .msg-content ol {
+      margin: 6px 0;
+      padding-left: 22px;
+    }
+    .msg.assistant .msg-content li { margin: 3px 0; }
+    .msg.assistant .msg-content strong { font-weight: 600; }
+    .msg.assistant .msg-content a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .msg.assistant .msg-content a:hover { color: var(--accent-hover); }
+    .msg-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    .msg-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .msg.user .msg-avatar { background: var(--accent); color: var(--accent-on); order: 1; }
+    .msg.assistant .msg-avatar {
+      background: rgba(30, 215, 96, 0.2);
+      color: var(--accent);
+    }
+
+
+
+    .code-block {
+      background: var(--code-bg);
+      border-radius: var(--radius-lg);
+      margin: 12px 0;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .code-block-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .code-block-header .copy-btn {
+      background: none; border: none;
+      color: rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+    .code-block-header .copy-btn:hover { color: white; background: rgba(255, 255, 255, 0.1); }
+    .code-block pre {
+      margin: 0;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--code-fg);
+      tab-size: 2;
+    }
+
+    .hl-keyword { color: var(--code-keyword); }
+    .hl-string { color: var(--code-string); }
+    .hl-number { color: var(--code-number); }
+    .hl-func { color: var(--code-func); }
+    .hl-comment { color: var(--code-comment); font-style: italic; }
+    .hl-type { color: var(--code-type); }
+
+    .tool-call {
+      margin: 10px 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      background: var(--code-bg);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .tool-call-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      cursor: default;
+      user-select: none;
+    }
+    .tool-call-header.clickable { cursor: pointer; }
+    .tool-call-header.clickable:hover { background: rgba(255, 255, 255, 0.08); }
+    .tool-call-header svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+    .tool-call-header .tool-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tool-call-header .tool-path { color: var(--fg); font-size: 12px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tool-call-header .tool-chevron { margin-left: auto; transition: transform 0.15s ease; color: var(--muted); }
+    .tool-call-header .tool-chevron.open { transform: rotate(180deg); }
+    .tool-call-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    .tool-call-body.open { max-height: 600px; overflow-y: auto; }
+    .tool-call-body pre {
+      margin: 0; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 12px;
+      line-height: 1.55; color: var(--code-fg);
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .tool-call-header .tool-edit-hint {
+      margin-left: auto; font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .tool-call-header .tool-edit-hint svg { width: 12px; height: 12px; }
+
+    .diff-modal-panel {
+      width: min(860px, 92vw);
+      max-height: 80vh;
+    }
+    .diff-file-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-soft);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg);
+    }
+    .diff-file-bar svg { width: 14px; height: 14px; color: var(--muted); }
+    .diff-stats {
+      margin-left: auto; font-size: 11px; color: var(--muted);
+    }
+    .diff-stats .diff-add { color: #3fb950; }
+    .diff-stats .diff-del { color: #f85149; }
+    .diff-content {
+      padding: 0;
+      overflow-y: auto;
+      max-height: calc(80vh - 110px);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .diff-line {
+      display: flex;
+      min-height: 22px;
+    }
+    .diff-line .diff-num {
+      width: 48px; min-width: 48px;
+      text-align: right;
+      padding: 0 8px;
+      color: rgba(255,255,255,0.25);
+      user-select: none;
+      background: rgba(255,255,255,0.02);
+    }
+    .diff-line .diff-code {
+      flex: 1;
+      padding: 0 12px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .diff-line.context { background: transparent; }
+    .diff-line.context .diff-code { color: var(--code-fg); }
+    .diff-line.add { background: rgba(63, 185, 80, 0.1); }
+    .diff-line.add .diff-num { background: rgba(63, 185, 80, 0.06); }
+    .diff-line.add .diff-code { color: #3fb950; }
+    .diff-line.del { background: rgba(248, 81, 73, 0.1); }
+    .diff-line.del .diff-num { background: rgba(248, 81, 73, 0.06); }
+    .diff-line.del .diff-code { color: #f85149; }
+    .diff-line.hunk {
+      background: rgba(30, 215, 96, 0.06);
+      color: var(--accent);
+      font-style: italic;
+    }
+    .diff-line.hunk .diff-code { color: rgba(30, 215, 96, 0.6); }
+
+    .input-area {
+      margin: 0 16px 16px;
+      padding: 10px 14px 12px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-raised);
+      flex-shrink: 0;
+      position: relative;
+      transition: var(--motion-base) var(--ease-standard);
+      border: 2px solid transparent;
+    }
+
+    .stream-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 4px 8px;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .stream-pulse {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: streamPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes streamPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+    .stream-text { font-weight: 500; }
+    .stream-ctx {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .input-row { display: flex; gap: 8px; align-items: flex-end; }
+    .input-wrap {
+      flex: 1;
+      display: flex; align-items: flex-end;
+      background: var(--surface-warm);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 3px;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .input-wrap:focus-within { border-color: var(--accent); }
+
+    .input-actions {
+      display: flex; align-items: center;
+      padding: 2px 4px;
+      gap: 1px;
+    }
+    .input-actions button {
+      width: 32px; height: 32px;
+      border: none; background: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--fg-2);
+      display: grid; place-items: center;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .input-actions button:hover { background: var(--border-soft); color: var(--accent); }
+    #thinkBtn svg { transition: transform var(--motion-fast) var(--ease-standard); }
+    #thinkBtn:hover svg { transform: scale(1.15); }
+
+    #chatInput {
+      flex: 1;
+      border: none; background: none;
+      padding: 10px 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--fg);
+      outline: none;
+      resize: none;
+      max-height: 140px;
+      line-height: 1.5;
+    }
+    #chatInput::placeholder { color: var(--muted); }
+
+    .send-btn {
+      width: 38px; height: 38px;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-on);
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: var(--motion-fast) var(--ease-standard);
+      flex-shrink: 0;
+      box-shadow: none;
+    }
+    .send-btn:hover { background: var(--accent-hover); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    .field-group { margin-bottom: 12px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label { display: block; font-size: 12px; font-weight: 500; color: var(--fg-2); margin-bottom: 5px; }
+    .field-group .field-hint { font-size: 11px; color: var(--muted); margin: 3px 0 0; }
+    .input, .select {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); background: var(--surface-warm); color: var(--fg);
+      font-family: var(--font-body); font-size: 13px;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .input:focus, .select:focus { outline: none; border-color: var(--accent); box-shadow: var(--focus-ring); }
+    .input-mono { font-family: var(--font-mono); font-size: 12px; }
+    .select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23b3b3b3'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px;
+    }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider-row input[type="range"] {
+      flex: 1; -webkit-appearance: none; appearance: none; height: 5px;
+      background: var(--border-soft); border-radius: 3px; outline: none;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent); box-shadow: var(--elev-raised); cursor: pointer;
+    }
+    .slider-val { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); min-width: 28px; text-align: right; }
+    .toggle-switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-switch .toggle-track {
+      position: absolute; inset: 0; background: var(--border); border-radius: 12px;
+      cursor: pointer; transition: var(--motion-base) var(--ease-standard);
+    }
+    .toggle-switch .toggle-track::after {
+      content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px;
+      background: var(--fg); border-radius: 50%; transition: var(--motion-base) var(--ease-standard);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
+    .model-tag {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--fg); line-height: 1.4;
+    }
+    .model-tag .mt-ctx { font-family: var(--font-body); font-size: 10px; color: var(--muted); font-weight: 400; }
+    .agent-icon {
+      width: 30px; height: 30px; border-radius: var(--radius-lg);
+      background: rgba(30, 215, 96, 0.15); display: grid; place-items: center;
+      color: var(--accent); flex-shrink: 0;
+    }
+    .agent-badge {
+      display: inline-block; padding: 1px 8px; font-size: 10px; font-weight: 500;
+      border-radius: var(--radius-pill);
+    }
+    .agent-badge.primary { background: rgba(30, 215, 96, 0.15); color: var(--accent); }
+    .agent-badge.sub { background: rgba(255, 255, 255, 0.1); color: var(--muted); }
+    .agent-badge.muted { background: rgba(255, 255, 255, 0.08); color: var(--muted); }
+    .session-card:hover { background: var(--surface-warm) !important; border-color: var(--border) !important; }
+
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: modalFadeIn 0.2s ease;
+    }
+    .modal-overlay.open { display: flex; }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-panel {
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalSlideUp 0.25s ease;
+      max-height: 88vh;
+    }
+
+    .modal-panel.modal-settings {
+      width: min(920px, 92vw);
+      height: min(680px, 82vh);
+    }
+    .modal-panel.modal-history {
+      width: min(760px, 92vw);
+      height: min(640px, 78vh);
+    }
+
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-soft);
+      flex-shrink: 0;
+    }
+    .modal-head h2 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .modal-head h2 svg { width: 20px; height: 20px; color: var(--accent); }
+    .modal-close {
+      width: 32px; height: 32px;
+      border: none; background: var(--surface-warm);
+      border-radius: 50%;
+      color: var(--muted);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .modal-close:hover { background: var(--border-soft); color: var(--fg); }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .modal-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-3);
+      padding: 12px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border-soft);
+    }
+    .modal-footer .mf-left {
+      margin-right: auto;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .settings-modal-layout {
+      display: flex;
+      height: 100%;
+    }
+    .settings-modal-nav {
+      width: 190px;
+      background: var(--surface);
+      border-right: 1px solid var(--border-soft);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      gap: 2px;
+      overflow-y: auto;
+    }
+    .settings-modal-nav .smn-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding: 8px 10px 6px;
+    }
+    .smn-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px;
+      border-radius: var(--radius-lg);
+      border: none; background: none;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--fg-2);
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+      text-align: left;
+      width: 100%;
+    }
+    .smn-item:hover { background: var(--surface-warm); color: var(--fg); }
+    .smn-item.active { background: rgba(30, 215, 96, 0.1); color: var(--accent); font-weight: 500; }
+    .smn-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+    .smn-item.active svg { opacity: 1; }
+    .smn-divider { height: 1px; background: var(--border-soft); margin: 6px 10px; }
+
+    .settings-modal-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      min-width: 0;
+    }
+    .settings-modal-content .setting-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--elev-raised);
+      margin-bottom: 16px;
+    }
+    .settings-modal-content .setting-card:last-child { margin-bottom: 0; }
+    .settings-modal-content .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .settings-modal-content .card-head h3 {
+      font-family: var(--font-display);
+      font-size: 15px; font-weight: 600; margin: 0;
+    }
+    .settings-modal-content .card-desc {
+      font-size: 13px; color: var(--fg-2); margin-bottom: 16px; line-height: 1.5;
+    }
+    .settings-modal-content .tab-header { margin-bottom: 20px; }
+    .settings-modal-content .tab-header h2 {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 600; margin: 0 0 4px;
+    }
+    .settings-modal-content .tab-header p {
+      color: var(--fg-2); font-size: 13px; margin: 0;
+    }
+    .settings-modal-content .tab-header .tab-count {
+      font-size: 11px; color: var(--muted); margin-top: 4px;
+    }
+
+    .smt { display: none; }
+    .smt.active { display: block; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 16px;
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      background: var(--surface-warm); color: var(--fg);
+      cursor: pointer; white-space: nowrap;
+      transition: all var(--motion-fast) var(--ease-standard);
+      line-height: 1.4; text-decoration: none;
+    }
+    .btn:hover { background: var(--border-soft); border-color: var(--muted); }
+    .btn:active { transform: scale(0.97); }
+    .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .btn-primary {
+      background: var(--accent); color: var(--accent-on);
+      border-color: var(--accent); font-weight: 600;
+    }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-primary:active { background: color-mix(in oklab, var(--accent), black 15%); }
+
+    .btn-secondary {
+      background: var(--surface); color: var(--fg-2);
+      border-color: var(--border-soft);
+    }
+    .btn-secondary:hover { background: var(--surface-warm); color: var(--fg); border-color: var(--border); }
+
+    .btn-danger {
+      background: transparent; color: var(--danger);
+      border-color: rgba(243, 114, 127, 0.3);
+    }
+    .btn-danger:hover { background: rgba(243, 114, 127, 0.12); border-color: var(--danger); }
+
+    .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+    .btn-xs { padding: 3px 8px; font-size: 11px; border-radius: 5px; }
+
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .history-modal-inner {
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .input-area { margin: 0 10px 12px; }
+      .chat-messages { padding: 16px 12px; }
+      .modal-panel.modal-settings,
+      .modal-panel.modal-history { width: 98vw; height: 90vh; }
+      .settings-modal-nav { width: 56px; }
+      .settings-modal-nav .smn-item span { display: none; }
+      .settings-modal-nav .smn-label { display: none; }
+      .settings-modal-nav .smn-item { justify-content: center; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-brand">
+        <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="8" style="fill:var(--accent)"/><path d="M8 14l4 4 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Athena
+      </div>
+      <nav class="topbar-nav">
+        <span class="active" style="font-size:13px;padding:4px 0;border-bottom:2px solid var(--accent);color:var(--accent);">对话</span>
+        <a href="#" onclick="openModal('settings');return false;" style="font-size:13px;color:var(--fg-2);padding:4px 0;border-bottom:2px solid transparent;transition:var(--motion-fast) var(--ease-standard);">设置</a>
+        <a href="#" onclick="openModal('history');return false;" style="font-size:13px;color:var(--fg-2);padding:4px 0;border-bottom:2px solid transparent;transition:var(--motion-fast) var(--ease-standard);">历史</a>
+      </nav>
+    </div>
+    <div class="topbar-right">
+      <div class="agent-selector" id="agentSelector">
+        <div class="agent-trigger" onclick="toggleAgentDropdown()">
+          <span class="agent-avatar" id="agentTriggerAvatar">A</span>
+          <span id="agentTriggerName">全能辅助</span>
+          <span class="tab-hint">Tab 切换</span>
+          <span class="agent-arrow">▾</span>
+        </div>
+        <div class="agent-dropdown" id="agentDropdown">
+          <div class="agent-dropdown-head">主代理</div>
+          <div id="agentDropdownList">
+          </div>
+        </div>
+      </div>
+
+      <div class="token-panel" id="tokenPanel">
+        <div class="token-trigger" onclick="toggleTokenDropdown()">
+          <span class="tt-dot"></span>
+          <span id="tokenTriggerText">3.2K / 128K</span>
+        </div>
+        <div class="token-dropdown" id="tokenDropdown">
+          <div class="td-title">本轮对话 Token 消耗</div>
+          <div class="token-breakdown" id="tokenBreakdown">
+          </div>
+          <div class="td-bar"><div class="td-fill" id="tdFill" style="width:2.5%"></div></div>
+          <div class="td-footer">
+            <span id="tdModelCount">3 个模型</span>
+            <span id="tdCost">估算成本: $0.024</span>
+          </div>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="切换浅色/深色模式">
+          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar" data-od-id="sidebar">
+      <div class="sidebar-head">
+        <button class="btn-new" onclick="newConversation()">+ 新对话</button>
+      </div>
+      <div class="conv-list" id="convList">
+        <div class="conv-item active">
+          <div class="conv-item-title">优化数据查询性能</div>
+          <div class="conv-item-meta"><span>今天 14:23</span><span>12 条消息</span></div>
+          <span class="token-summary-side">3.2K</span>
+        </div>
+        <div class="conv-item">
+          <div class="conv-item-title">设计系统组件方案讨论</div>
+          <div class="conv-item-meta"><span>今天 11:05</span><span>8 条消息</span></div>
+          <span class="token-summary-side">1.8K</span>
+        </div>
+        <div class="conv-item">
+          <div class="conv-item-title">重构用户认证模块</div>
+          <div class="conv-item-meta"><span>昨天</span><span>24 条消息</span></div>
+          <span class="token-summary-side">8.4K</span>
+        </div>
+        <div class="conv-item">
+          <div class="conv-item-title">API 接口文档生成</div>
+          <div class="conv-item-meta"><span>昨天</span><span>6 条消息</span></div>
+          <span class="token-summary-side">2.1K</span>
+        </div>
+        <div class="conv-item">
+          <div class="conv-item-title">数据库 Schema 迁移方案</div>
+          <div class="conv-item-meta"><span>周二</span><span>18 条消息</span></div>
+          <span class="token-summary-side">5.6K</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="chat-main" data-od-id="chat-main">
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-messages-inner">
+
+          <div class="msg assistant">
+            <div class="msg-avatar">A</div>
+            <div class="msg-content">
+              <p>你好！我是 <strong>全能辅助</strong>，当前绑定 <strong>DeepSeek V3</strong>。我可以帮你：</p>
+              <ul>
+                <li>编写和调试代码</li>
+                <li>设计和修改界面</li>
+                <li>分析数据和文档</li>
+                <li>回答技术问题</li>
+              </ul>
+              <p>按 <kbd>Tab</kbd> 可以切换到其他主代理，对话上下文保持不变。</p>
+              <div class="msg-time">刚刚</div>
+            </div>
+          </div>
+
+          <div class="msg user">
+            <div class="msg-avatar">U</div>
+            <div class="msg-content">
+              <div class="msg-bubble">帮我优化一下这个 SQL 查询，它跑得太慢了</div>
+              <div class="msg-model-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>GPT-4o</div>
+              <div class="msg-time">14:25</div>
+            </div>
+          </div>
+
+          <div class="msg assistant">
+            <div class="msg-avatar">C</div>
+            <div class="msg-content">
+
+              <div class="tool-call">
+                <div class="tool-call-header">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+                  <span class="tool-label">Read</span>
+                  <span class="tool-path">src/db/queries.sql</span>
+                </div>
+              </div>
+
+              <div class="tool-call">
+                <div class="tool-call-header clickable" onclick="toggleCmd(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                  <span class="tool-label">Shell</span>
+                  <span class="tool-path">psql -c "EXPLAIN ANALYZE SELECT * FROM orders"</span>
+                  <svg class="tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="tool-call-body">
+                  <pre>QUERY PLAN
+------------------------------------------------------------
+Limit  (cost=0.00..3825.00 rows=100 width=128) (actual time=0.045..2.837 rows=100 loops=1)
+  ->  Seq Scan on orders  (cost=0.00..15210.00 rows=400 width=128) (actual time=0.043..2.810 rows=100 loops=1)
+Planning Time: 0.082 ms
+Execution Time: 2.876 ms
+(5 rows)</pre>
+                </div>
+              </div>
+
+              <div class="tool-call">
+                <div class="tool-call-header clickable" onclick="openDiffModal()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                  <span class="tool-label">Edit</span>
+                  <span class="tool-path">src/db/queries.sql</span>
+                  <span class="tool-edit-hint">查看 diff <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                </div>
+              </div>
+
+              <p>好的，我来分析一下。原查询的主要问题是缺少索引和使用了低效的 <code>SELECT *</code>。</p>
+
+              <p>这是优化后的版本：</p>
+
+              <div class="code-block">
+                <div class="code-block-header">
+                  <span>sql</span>
+                  <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                </div>
+                <pre><span class="hl-keyword">SELECT</span>
+  o.<span class="hl-prop">id</span>,
+  o.<span class="hl-prop">customer_name</span>,
+  o.<span class="hl-prop">total_amount</span>,
+  o.<span class="hl-prop">status</span>
+<span class="hl-keyword">FROM</span> <span class="hl-type">orders</span> o
+<span class="hl-keyword">WHERE</span> o.<span class="hl-prop">created_at</span> &gt;= <span class="hl-string">'2024-01-01'</span>
+  <span class="hl-keyword">AND</span> o.<span class="hl-prop">status</span> <span class="hl-keyword">IN</span> (<span class="hl-string">'pending'</span>, <span class="hl-string">'processing'</span>)
+<span class="hl-keyword">ORDER BY</span> o.<span class="hl-prop">created_at</span> <span class="hl-keyword">DESC</span>
+<span class="hl-keyword">LIMIT</span> 100;</pre>
+              </div>
+
+              <p>主要优化点：</p>
+              <ul>
+                <li><strong>指定字段</strong>：用具体列名替代 <code>SELECT *</code>，减少数据传输量</li>
+                <li><strong>索引建议</strong>：在 <code>created_at</code> 和 <code>status</code> 上创建复合索引</li>
+                <li><strong>分页限制</strong>：添加 <code>LIMIT</code> 防止全表扫描</li>
+              </ul>
+              <div class="msg-time">14:25 · 由 GPT-4o 回复</div>
+            </div>
+          </div>
+
+          <div class="msg user">
+            <div class="msg-avatar">U</div>
+            <div class="msg-content">
+              <div class="msg-bubble">分析一下这个数据，看看有哪些业务洞察</div>
+              <div class="msg-model-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>DeepSeek V3</div>
+              <div class="msg-time">14:28</div>
+            </div>
+          </div>
+
+          <div class="msg assistant">
+            <div class="msg-avatar">A</div>
+            <div class="msg-content">
+              <p>好的，让我来分析这些数据。</p>
+              <p>从数据集来看，有几个值得注意的模式：</p>
+              <ol>
+                <li><strong>季度性波动</strong>：Q2 和 Q4 的订单量明显高于 Q1 和 Q3，这与行业旺季一致</li>
+                <li><strong>客单价分化</strong>：高价值客户（>¥500）仅占 15%，但贡献了 42% 的收入</li>
+                <li><strong>转化漏斗</strong>：从添加到购物车到完成支付，平均流失率约 37%，在支付环节流失最严重</li>
+              </ol>
+              <p>建议优先优化支付流程的转化率。</p>
+              <div class="msg-time">14:28 · 由 DeepSeek V3 回复</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area" id="inputArea">
+        <div class="stream-status" id="streamStatus" style="display:none;">
+          <div class="stream-pulse"></div>
+          <span class="stream-text">全能辅助 正在思考…</span>
+          <span class="stream-ctx">↑ 512 · ↓ 128</span>
+        </div>
+
+        <div class="input-row">
+          <div class="input-wrap">
+            <div class="input-actions">
+              <button onclick="document.getElementById('fileInput').click()" title="上传文件">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+              <button onclick="document.getElementById('imageInput').click()" title="上传图片">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button id="thinkBtn" onclick="cycleThinkLevel()" title="思考程度: 默认"></button>
+            </div>
+            <textarea id="chatInput" placeholder="向 全能辅助 提问… (Ctrl+Enter 发送)" rows="1"></textarea>
+          </div>
+          <button class="send-btn" onclick="sendMessage()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+
+        <input type="file" id="fileInput" style="display:none;" multiple />
+        <input type="file" id="imageInput" style="display:none;" accept="image/*" multiple />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      var html = document.documentElement;
+      var current = html.getAttribute('data-theme') || 'dark';
+      var next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('athena-theme', next);
+      updateThemeIcon();
+    }
+    function updateThemeIcon() {
+      var theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      var icon = document.getElementById('themeIcon');
+      if (!icon) return;
+      if (theme === 'light') {
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      } else {
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+      }
+    }
+    (function() {
+      var saved = localStorage.getItem('athena-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+
+    const THINK_LEVEL_ICONS = {
+      default: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+      low: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>',
+      medium: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><path d="M9 10h1M14 10h1" stroke-linecap="round"/></svg>',
+      high: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><path d="M10 2v-1M14 2v-1" stroke-linecap="round" transform="translate(0 3)"/></svg>',
+      xhigh: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><path d="M12 2c3 0 5 1 5 1M12 2c-3 0-5 1-5 1" stroke-linecap="round" opacity=".6"/></svg>',
+    };
+    const THINK_LEVELS = [
+      { value: 'default', label: '默认' },
+      { value: 'low', label: '低' },
+      { value: 'medium', label: '中' },
+      { value: 'high', label: '高' },
+      { value: 'xhigh', label: '极高' },
+    ];
+    let thinkLevelIndex = 0;
+
+    function renderThinkBtn() {
+      const level = THINK_LEVELS[thinkLevelIndex];
+      const btn = document.getElementById('thinkBtn');
+      btn.innerHTML = THINK_LEVEL_ICONS[level.value];
+      btn.title = '思考程度: ' + level.label;
+      btn.classList.toggle('active', level.value !== 'default');
+    }
+    renderThinkBtn();
+
+    function cycleThinkLevel() {
+      thinkLevelIndex = (thinkLevelIndex + 1) % THINK_LEVELS.length;
+      renderThinkBtn();
+    }
+
+    const state = {
+      primaryAgents: [
+        { id: 'primary-all', name: '全能辅助', avatar: 'A', model: 'DeepSeek V3', provider: 'DeepSeek' },
+        { id: 'primary-code', name: '代码专家', avatar: 'C', model: 'GPT-4o', provider: 'OpenAI' },
+        { id: 'primary-doc', name: '文档专家', avatar: 'D', model: 'Claude Sonnet 4', provider: 'Anthropic' },
+      ],
+      currentAgentId: 'primary-all',
+      conversations: [
+        { id: 1, title: '优化数据查询性能', messages: 12, agentId: 'primary-all', time: '今天 14:23', tokens: 3248 },
+        { id: 2, title: '设计系统组件方案讨论', messages: 8, agentId: 'primary-code', time: '今天 11:05', tokens: 1842 },
+        { id: 3, title: '重构用户认证模块', messages: 24, agentId: 'primary-all', time: '昨天', tokens: 8460 },
+        { id: 4, title: 'API 接口文档生成', messages: 6, agentId: 'primary-doc', time: '昨天', tokens: 2132 },
+        { id: 5, title: '数据库 Schema 迁移方案', messages: 18, agentId: 'primary-code', time: '周二', tokens: 5678 },
+      ],
+      tokenUsage: [
+        { model: 'DeepSeek V3', provider: 'DeepSeek', inputTokens: 512, outputTokens: 1248, cacheHitTokens: 384, cost: 0.0035 },
+        { model: 'GPT-4o', provider: 'OpenAI', inputTokens: 856, outputTokens: 2436, cacheHitTokens: 640, cost: 0.018 },
+        { model: 'Claude Sonnet 4', provider: 'Anthropic', inputTokens: 380, outputTokens: 1820, cacheHitTokens: 256, cost: 0.012 },
+      ],
+      totalContextWindow: 128000,
+    };
+
+    function getCurrentAgent() {
+      return state.primaryAgents.find(a => a.id === state.currentAgentId) || state.primaryAgents[0];
+    }
+
+    let agentDropdownOpen = false;
+
+    function renderAgentDropdown() {
+      const list = document.getElementById('agentDropdownList');
+      list.innerHTML = '';
+      state.primaryAgents.forEach(agent => {
+        const item = document.createElement('div');
+        item.className = 'agent-dropdown-item' + (agent.id === state.currentAgentId ? ' active' : '');
+        item.onclick = () => { switchAgent(agent.id); closeAgentDropdown(); };
+        item.innerHTML = `
+          <div class="ad-avatar">${agent.avatar}</div>
+          <div class="ad-info">
+            <div class="ad-name">${agent.name}</div>
+            <div class="ad-model">${agent.provider} · ${agent.model}</div>
+          </div>
+          <div class="ad-check">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function toggleAgentDropdown() {
+      agentDropdownOpen = !agentDropdownOpen;
+      document.getElementById('agentDropdown').classList.toggle('open', agentDropdownOpen);
+    }
+
+    function closeAgentDropdown() {
+      agentDropdownOpen = false;
+      document.getElementById('agentDropdown').classList.remove('open');
+    }
+
+    function switchAgent(agentId) {
+      if (agentId === state.currentAgentId) return;
+      const prev = getCurrentAgent();
+      state.currentAgentId = agentId;
+      const next = getCurrentAgent();
+
+      document.getElementById('agentTriggerAvatar').textContent = next.avatar;
+      document.getElementById('agentTriggerName').textContent = next.name;
+
+      document.getElementById('chatInput').placeholder = `向 ${next.name} 提问… (Ctrl+Enter 发送)`;
+
+      document.querySelector('#streamStatus .stream-text').textContent = `${next.name} 正在思考…`;
+
+      renderAgentDropdown();
+
+
+    }
+
+    function appendSystemMessage(text) {
+      const container = document.querySelector('.chat-messages-inner');
+      const div = document.createElement('div');
+      div.style.cssText = `
+        text-align: center;
+        padding: 8px 0;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      `;
+      div.textContent = text;
+      container.appendChild(div);
+      scrollToBottom();
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab' && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) {
+        const input = document.getElementById('chatInput');
+        if (document.activeElement === input) {
+          return;
+        }
+        e.preventDefault();
+        const idx = state.primaryAgents.findIndex(a => a.id === state.currentAgentId);
+        const nextIdx = (idx + 1) % state.primaryAgents.length;
+        switchAgent(state.primaryAgents[nextIdx].id);
+      }
+    });
+
+    let tokenDropdownOpen = false;
+    function renderTokenPanel() {
+      const usage = state.tokenUsage;
+      const totalInput = usage.reduce((s, u) => s + u.inputTokens, 0);
+      const totalOutput = usage.reduce((s, u) => s + u.outputTokens, 0);
+      const totalCacheHit = usage.reduce((s, u) => s + (u.cacheHitTokens || 0), 0);
+      const totalTokens = totalInput + totalOutput;
+      const totalCost = usage.reduce((s, u) => s + u.cost, 0);
+      const pct = Math.min((totalTokens / state.totalContextWindow) * 100, 100);
+
+      document.getElementById('tokenTriggerText').textContent =
+        (totalTokens / 1000).toFixed(1) + 'K / ' + (state.totalContextWindow / 1000).toFixed(0) + 'K';
+
+      document.getElementById('tdFill').style.width = pct + '%';
+
+      const tbody = document.getElementById('tokenBreakdown');
+      tbody.innerHTML = '';
+
+      usage.forEach(u => {
+        const group = document.createElement('div');
+        group.className = 'tb-model-group';
+        const dotColor = u.provider === 'OpenAI' ? '#1ed760' : u.provider === 'Anthropic' ? '#f3727f' : '#539df5';
+        const cacheHit = u.cacheHitTokens || 0;
+        group.innerHTML = `
+          <div class="tb-model-name">
+            <span class="tb-dot" style="background:${dotColor}"></span>
+            <span>${u.model} · ${u.provider}</span>
+          </div>
+          <div class="tb-row">
+            <span class="tb-label">输入 Token</span>
+            <span class="tb-nums">${u.inputTokens.toLocaleString()}</span>
+          </div>
+          <div class="tb-row">
+            <span class="tb-label">输出 Token</span>
+            <span class="tb-nums">${u.outputTokens.toLocaleString()}</span>
+          </div>
+          <div class="tb-row">
+            <span class="tb-label">缓存命中</span>
+            <span class="tb-nums">${cacheHit.toLocaleString()}</span>
+          </div>
+        `;
+        tbody.appendChild(group);
+      });
+
+      document.getElementById('tdModelCount').textContent =
+        usage.length + ' 个模型';
+      document.getElementById('tdCost').textContent =
+        '$' + totalCost.toFixed(4);
+    }
+
+    function toggleTokenDropdown() {
+      tokenDropdownOpen = !tokenDropdownOpen;
+      document.getElementById('tokenDropdown').classList.toggle('open', tokenDropdownOpen);
+      if (tokenDropdownOpen) renderTokenPanel();
+    }
+
+    document.addEventListener('click', function(e) {
+      const agentSel = document.getElementById('agentSelector');
+      if (!agentSel.contains(e.target)) closeAgentDropdown();
+
+      const tokenPanel = document.getElementById('tokenPanel');
+      if (!tokenPanel.contains(e.target)) {
+        document.getElementById('tokenDropdown').classList.remove('open');
+        tokenDropdownOpen = false;
+      }
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const agent = getCurrentAgent();
+      const container = document.querySelector('.chat-messages-inner');
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg user';
+      const now = new Date();
+      const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+      userMsg.innerHTML = `
+        <div class="msg-avatar">U</div>
+        <div class="msg-content">
+          <div class="msg-bubble">${escapeHtml(text)}</div>
+          <div class="msg-model-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>${agent.model}</div>
+          <div class="msg-time">${timeStr}</div>
+        </div>
+      `;
+      container.appendChild(userMsg);
+      input.value = '';
+      input.style.height = 'auto';
+      scrollToBottom();
+
+      showStreamStatus(agent);
+    }
+
+    function showStreamStatus(agent) {
+      const status = document.getElementById('streamStatus');
+      status.style.display = 'flex';
+      status.querySelector('.stream-text').textContent = agent.name + ' 正在思考…';
+      scrollToBottom();
+
+      setTimeout(() => {
+        status.style.display = 'none';
+
+        const container = document.querySelector('.chat-messages-inner');
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'msg assistant';
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        aiMsg.innerHTML = `
+          <div class="msg-avatar">${agent.avatar}</div>
+          <div class="msg-content">
+            <p>收到，我来处理这个请求。</p>
+            <p>（这是由 <strong>${agent.name}</strong>（${agent.model}）生成的模拟回复。在实际运行中，这里会显示模型的真实输出。）</p>
+            <div class="msg-time">${timeStr} · 由 ${agent.model} 回复</div>
+          </div>
+        `;
+        container.appendChild(aiMsg);
+        scrollToBottom();
+      }, 1200);
+    }
+
+    function newConversation() {
+      const container = document.querySelector('.chat-messages-inner');
+      while (container.children.length > 1) {
+        container.removeChild(container.lastChild);
+      }
+      showToast('已新建对话');
+    }
+
+    function scrollToBottom() {
+      const el = document.getElementById('chatMessages');
+      requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = '已复制';
+        setTimeout(() => { btn.textContent = '复制'; }, 1500);
+      });
+    }
+
+    function toggleCmd(header) {
+      const body = header.nextElementSibling;
+      const chevron = header.querySelector('.tool-chevron');
+      body.classList.toggle('open');
+      chevron.classList.toggle('open');
+    }
+
+    function openDiffModal() {
+      document.getElementById('modal-diff').classList.add('open');
+    }
+    function closeDiffModal() {
+      document.getElementById('modal-diff').classList.remove('open');
+    }
+
+    document.getElementById('chatInput').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+    });
+
+    document.getElementById('chatInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function showToast(msg) {
+      let toast = document.getElementById('toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = `
+          position: fixed; bottom: 24px; left: 50%;
+          transform: translateX(-50%) translateY(20px);
+          background: var(--fg); color: var(--bg);
+          padding: 12px 24px; border-radius: var(--radius-lg);
+          font-size: 14px; font-weight: 500;
+          box-shadow: var(--elev-raised);
+          opacity: 0; transition: all 0.24s var(--ease-standard);
+          pointer-events: none; z-index: 100;
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+      }, 2200);
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        const names = Array.from(this.files).map(f => f.name).join(', ');
+        showToast('已上传: ' + names);
+      }
+      this.value = '';
+    });
+    document.getElementById('imageInput').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        const names = Array.from(this.files).map(f => f.name).join(', ');
+        showToast('已上传: ' + names);
+      }
+      this.value = '';
+    });
+
+    renderAgentDropdown();
+    renderTokenPanel();
+    scrollToBottom();
+
+    function openModal(type) {
+      if (type === 'settings') {
+        document.getElementById('modal-settings').classList.add('open');
+      } else if (type === 'history') {
+        document.getElementById('modal-history').classList.add('open');
+        renderHistoryTokens();
+      }
+    }
+    function closeModal(type) {
+      if (type === 'settings') {
+        document.getElementById('modal-settings').classList.remove('open');
+      } else if (type === 'history') {
+        document.getElementById('modal-history').classList.remove('open');
+      } else if (type === 'diff') {
+        closeDiffModal();
+      }
+    }
+    function closeAllModals() {
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeAllModals();
+        closeAgentDropdown();
+        document.getElementById('tokenDropdown').classList.remove('open');
+        tokenDropdownOpen = false;
+      }
+    });
+  </script>
+
+  <div class="modal-overlay" id="modal-settings" onclick="if(event.target===this)closeModal('settings')">
+    <div class="modal-panel modal-settings">
+      <div class="modal-head">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>
+          设置
+        </h2>
+        <button class="modal-close" onclick="closeModal('settings')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-modal-layout">
+          <nav class="settings-modal-nav">
+            <div class="smn-label">配置</div>
+            <button class="smn-item active" data-smtab="providers" onclick="switchSettingsTab('providers',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="7" rx="10" ry="3"/><path d="M22 7v4M2 7v4"/><path d="M2 11c0 1.66 3 3 10 3s10-1.34 10-3"/><path d="M2 15c0 1.66 3 3 10 3s10-1.34 10-3"/></svg>
+              <span>模型提供商</span>
+            </button>
+            <button class="smn-item" data-smtab="primary-agents" onclick="switchSettingsTab('primary-agents',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 017-7h4a7 7 0 017 7v2"/></svg>
+              <span>主代理</span>
+            </button>
+            <button class="smn-item" data-smtab="sub-agents" onclick="switchSettingsTab('sub-agents',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="16" r="4"/><path d="M5 21v-2a4 4 0 014-4h4"/></svg>
+              <span>子代理</span>
+            </button>
+            <div class="smn-divider"></div>
+            <button class="smn-item" data-smtab="general" onclick="switchSettingsTab('general',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>
+              <span>通用设置</span>
+            </button>
+            <button class="smn-item" data-smtab="memory" onclick="switchSettingsTab('memory',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="12" y1="9" x2="12" y2="15"/></svg>
+              <span>长期记忆</span>
+            </button>
+            <button class="smn-item" data-smtab="workdir" onclick="switchSettingsTab('workdir',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+              <span>工作目录记忆</span>
+            </button>
+            <button class="smn-item" data-smtab="display" onclick="switchSettingsTab('display',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>显示效果</span>
+            </button>
+          </nav>
+          <div class="settings-modal-content" id="settingsModalContent">
+
+            <div class="smt active" id="smt-providers">
+              <div class="tab-header">
+                <h2>模型提供商</h2>
+                <p>管理 API 端点与模型。</p>
+                <div class="tab-count">3 个提供商 · 7 个模型</div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head">
+                  <h3>已配置的提供商</h3>
+                  <button class="btn btn-primary btn-sm" onclick="addProvider()">+ 添加</button>
+                </div>
+                <div id="modal-provider-list">
+                  <div class="provider-card" style="background:var(--surface-warm);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;transition:var(--motion-fast) var(--ease-standard);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;"></span>
+                        <span style="font-weight:600;">OpenAI</span>
+                      </div>
+                      <button class="btn btn-danger btn-xs" onclick="this.closest('.provider-card').remove()">移除</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                      <div class="field-group"><label>Base URL</label><input class="input input-mono" type="text" value="https://api.openai.com/v1" /></div>
+                      <div class="field-group"><label>API 密钥</label><div style="display:flex;gap:4px;"><input class="input input-mono" type="password" value="sk-••••••••••" style="flex:1;" /><button class="btn btn-xs btn-secondary">显示</button><button class="btn btn-xs btn-secondary">测试</button></div></div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <span class="model-tag"><span>gpt-4o</span><span class="mt-ctx">128K</span></span>
+                      <span class="model-tag"><span>gpt-4o-mini</span><span class="mt-ctx">128K</span></span>
+                      <span class="model-tag"><span>o3-mini</span><span class="mt-ctx">200K</span></span>
+                    </div>
+                  </div>
+                  <div class="provider-card" style="background:var(--surface-warm);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;"></span>
+                        <span style="font-weight:600;">DeepSeek</span>
+                      </div>
+                      <button class="btn btn-danger btn-xs" onclick="this.closest('.provider-card').remove()">移除</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                      <div class="field-group"><label>Base URL</label><input class="input input-mono" type="text" value="https://api.deepseek.com/v1" /></div>
+                      <div class="field-group"><label>API 密钥</label><div style="display:flex;gap:4px;"><input class="input input-mono" type="password" value="sk-••••••••" style="flex:1;" /><button class="btn btn-xs btn-secondary">显示</button><button class="btn btn-xs btn-secondary">测试</button></div></div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <span class="model-tag"><span>deepseek-v4-flash</span><span class="mt-ctx">128K</span></span>
+                      <span class="model-tag"><span>deepseek-v4-pro</span><span class="mt-ctx">128K</span></span>
+                    </div>
+                  </div>
+                  <div class="provider-card" style="background:var(--surface-warm);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;"></span>
+                        <span style="font-weight:600;">Anthropic</span>
+                      </div>
+                      <button class="btn btn-danger btn-xs" onclick="this.closest('.provider-card').remove()">移除</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                      <div class="field-group"><label>Base URL</label><input class="input input-mono" type="text" value="https://api.anthropic.com/v1" /></div>
+                      <div class="field-group"><label>API 密钥</label><div style="display:flex;gap:4px;"><input class="input input-mono" type="password" value="sk-ant-••••••••" style="flex:1;" /><button class="btn btn-xs btn-secondary">显示</button><button class="btn btn-xs btn-secondary">测试</button></div></div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <span class="model-tag"><span>claude-sonnet-4</span><span class="mt-ctx">200K</span></span>
+                      <span class="model-tag"><span>claude-haiku-3.5</span><span class="mt-ctx">200K</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-general">
+              <div class="tab-header">
+                <h2>通用设置</h2>
+                <p>全局行为与偏好调整。</p>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>Token 消耗</h3></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);">
+                  <div><div style="font-size:14px;font-weight:500;">显示 Token 消耗</div><div style="font-size:12px;color:var(--muted);">在顶部显示本轮 Token 统计</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);">
+                  <div><div style="font-size:14px;font-weight:500;">流式输出</div><div style="font-size:12px;color:var(--muted);">边生成边显示结果</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+                  <div><div style="font-size:14px;font-weight:500;">代码高亮</div><div style="font-size:12px;color:var(--muted);">代码块语法高亮</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>上下文管理</h3></div>
+                <div class="field-group">
+                  <label>每轮对话最大 Token 数</label>
+                  <select class="select" style="max-width:200px;">
+                    <option>32K</option><option selected>64K</option><option>128K</option><option>200K</option>
+                  </select>
+                  <div class="field-hint">超过上限后最早的消息将被截断</div>
+                </div>
+                <div class="field-group">
+                  <label>触发上下文压缩的阈值</label>
+                  <div class="slider-row" style="max-width:300px;">
+                    <input type="range" min="50" max="95" step="5" value="80" oninput="this.nextElementSibling.textContent=this.value+'%'" />
+                    <span class="slider-val">80%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>数据与隐私</h3></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);">
+                  <div><div style="font-size:14px;font-weight:500;">保留对话历史</div><div style="font-size:12px;color:var(--muted);">关闭后退出时自动清除</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+                  <div><div style="font-size:14px;font-weight:500;">分析数据</div><div style="font-size:12px;color:var(--muted);">允许匿名使用数据以改进体验</div></div>
+                  <label class="toggle-switch"><input type="checkbox" /><span class="toggle-track"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-memory">
+              <div class="tab-header">
+                <h2>长期记忆</h2>
+                <p>AI 自动管理的跨会话记忆。</p>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>启用长期记忆</h3></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+                  <div><div style="font-size:14px;font-weight:500;">长期记忆</div><div style="font-size:12px;color:var(--muted);">自动记录和检索，跨会话保持连贯</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>记忆分类</h3><span style="font-size:11px;color:var(--muted);">AI 自动管理</span></div>
+                <div style="margin-bottom:12px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <div><div style="font-size:14px;font-weight:500;">👤 用户偏好</div><div style="font-size:12px;color:var(--muted);">语气、风格、格式</div></div>
+                    <select class="select" style="width:auto;min-width:60px;padding:4px 8px;font-size:12px;"><option>3</option><option selected>5</option><option>10</option></select>
+                  </div>
+                  <div style="padding:10px;background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border-soft);">
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);">偏好简洁回答</span>
+                      <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);">使用中文提问</span>
+                      <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);">喜欢代码示例</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="border-top:1px solid var(--border-soft);padding-top:12px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <div><div style="font-size:14px;font-weight:500;">💼 项目上下文</div><div style="font-size:12px;color:var(--muted);">项目目标、技术栈</div></div>
+                    <select class="select" style="width:auto;min-width:60px;padding:4px 8px;font-size:12px;"><option>3</option><option selected>5</option><option>10</option></select>
+                  </div>
+                  <div style="padding:10px;background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border-soft);">
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);">Athena 桌面应用</span>
+                      <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);">Electron + React</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-display">
+              <div class="tab-header">
+                <h2>显示效果</h2>
+                <p>自定义字体与排版。</p>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>字体设置</h3></div>
+                <div class="field-group">
+                  <label>显示字体（标题）</label>
+                  <select class="select" style="max-width:400px;">
+                    <option selected>Inter (默认)</option><option>SF Pro</option><option>Iowan Old Style</option><option>系统默认</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>正文字体</label>
+                  <select class="select" style="max-width:400px;">
+                    <option selected>系统字体 (默认)</option><option>Inter</option><option>IBM Plex Sans</option>
+                  </select>
+                </div>
+                <div class="field-group" style="margin-bottom:0;">
+                  <label>等宽字体</label>
+                  <select class="select" style="max-width:400px;">
+                    <option selected>JetBrains Mono</option><option>SF Mono</option><option>Fira Code</option>
+                  </select>
+                </div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>字体大小</h3></div>
+                <div class="field-group">
+                  <label>界面基准字号</label>
+                  <div class="slider-row" style="max-width:300px;">
+                    <input type="range" min="12" max="20" step="1" value="15" oninput="this.nextElementSibling.textContent=this.value+'px'" />
+                    <span class="slider-val">15px</span>
+                  </div>
+                </div>
+                <div class="field-group" style="margin-bottom:0;">
+                  <label>对话消息字号</label>
+                  <div class="slider-row" style="max-width:300px;">
+                    <input type="range" min="13" max="22" step="1" value="15" oninput="this.nextElementSibling.textContent=this.value+'px'" />
+                    <span class="slider-val">15px</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-primary-agents">
+              <div class="tab-header">
+                <h2>主代理</h2>
+                <p>直接对话的 AI 角色。Tab 键切换。</p>
+                <div class="tab-count">2 个主代理</div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>已配置的主代理</h3><button class="btn btn-primary btn-sm">+ 添加</button></div>
+                <div style="background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="agent-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+                      <span style="font-weight:600;">Athena Core</span>
+                      <span class="agent-badge primary">默认</span>
+                    </div>
+                    <button class="btn btn-danger btn-xs">移除</button>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="field-group"><label>绑定模型</label><select class="select"><option selected>DeepSeek — deepseek-v4-flash</option></select></div>
+                    <div class="field-group"><label>温度</label><div class="slider-row"><input type="range" min="0" max="2" step="0.1" value="0.7" oninput="this.nextElementSibling.textContent=parseFloat(this.value).toFixed(1)" /><span class="slider-val">0.7</span></div></div>
+                  </div>
+                </div>
+                <div style="background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="agent-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                      <span style="font-weight:600;">Coder Pro</span>
+                      <span class="agent-badge muted">代码专精</span>
+                    </div>
+                    <button class="btn btn-danger btn-xs">移除</button>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="field-group"><label>绑定模型</label><select class="select"><option selected>DeepSeek — deepseek-v4-pro</option></select></div>
+                    <div class="field-group"><label>温度</label><div class="slider-row"><input type="range" min="0" max="2" step="0.1" value="0.3" oninput="this.nextElementSibling.textContent=parseFloat(this.value).toFixed(1)" /><span class="slider-val">0.3</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-sub-agents">
+              <div class="tab-header">
+                <h2>子代理</h2>
+                <p>由主代理自动调用，不可直接选择。</p>
+                <div class="tab-count">4 个子代理</div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>已配置的子代理</h3><button class="btn btn-primary btn-sm">+ 添加</button></div>
+                <div style="background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;"><div class="agent-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 7 12 12 2 7"/></svg></div><span style="font-weight:600;">推理引擎</span><span class="agent-badge sub">子代理</span></div>
+                    <button class="btn btn-danger btn-xs">移除</button>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="field-group"><label>角色</label><input class="input" type="text" value="深度推理与逻辑分析" /></div>
+                    <div class="field-group"><label>模型</label><select class="select"><option selected>deepseek-v4-pro</option></select></div>
+                  </div>
+                </div>
+                <div style="background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;"><div class="agent-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2v4a2 2 0 002 2h4"/></svg></div><span style="font-weight:600;">文档编写器</span><span class="agent-badge sub">子代理</span></div>
+                    <button class="btn btn-danger btn-xs">移除</button>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="field-group"><label>角色</label><input class="input" type="text" value="结构化文档编写" /></div>
+                    <div class="field-group"><label>模型</label><select class="select"><option selected>claude-sonnet-4</option></select></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smt" id="smt-workdir">
+              <div class="tab-header">
+                <h2>工作目录记忆</h2>
+                <p>AI 自动维护的项目文件索引。</p>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>启用</h3></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+                  <div><div style="font-size:14px;font-weight:500;">工作目录记忆</div><div style="font-size:12px;color:var(--muted);">自动记录文件位置和用途</div></div>
+                  <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-track"></span></label>
+                </div>
+              </div>
+              <div class="setting-card">
+                <div class="card-head"><h3>当前索引</h3></div>
+                <div style="padding:10px;background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border-soft);margin-bottom:12px;">
+                  <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">关键路径</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);font-family:var(--font-mono);">/config.html</span>
+                    <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);font-family:var(--font-mono);">/chat.html</span>
+                    <span style="font-size:12px;padding:4px 10px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-pill);font-family:var(--font-mono);">/history.html</span>
+                  </div>
+                </div>
+                <div class="btn-group" style="flex-wrap:wrap;">
+                  <button class="btn btn-secondary btn-sm">重新索引</button>
+                  <button class="btn btn-secondary btn-sm">清空索引</button>
+                  <button class="btn btn-secondary btn-sm">导出</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="mf-left" id="settingsModalStatus">就绪</div>
+        <button class="btn btn-secondary" onclick="closeModal('settings')">取消</button>
+        <button class="btn btn-primary" onclick="showToast('设置已保存');closeModal('settings')">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-history" onclick="if(event.target===this)closeModal('history')">
+    <div class="modal-panel modal-history">
+      <div class="modal-head">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          历史记录
+        </h2>
+        <button class="modal-close" onclick="closeModal('history')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="history-modal-inner">
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <input class="input" type="search" placeholder="搜索对话内容…" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:500px;background:var(--surface);color:var(--fg);font:inherit;font-size:14px;" id="history-search" oninput="filterHistory()" />
+          </div>
+
+          <div id="history-list">
+            <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">今天</div>
+
+            <div class="session-card" data-session="h1" onclick="loadSession(1)" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:var(--motion-fast) var(--ease-standard);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(30,215,96,0.1);display:grid;place-items:center;flex-shrink:0;color:var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">React 组件重构方案</div>
+                <p style="font-size:12px;color:var(--muted);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">关于将类组件迁移到函数组件 + hooks 的讨论</p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">14:32</span>
+                <span style="font-size:10px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);">23 条</span>
+              </div>
+            </div>
+
+            <div class="session-card" data-session="h2" onclick="loadSession(2)" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:var(--motion-fast) var(--ease-standard);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(30,215,96,0.1);display:grid;place-items:center;flex-shrink:0;color:var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">产品落地页设计评审</div>
+                <p style="font-size:12px;color:var(--muted);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Landing page 信息层级、Hero 文案和 CTA 方案</p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">11:05</span>
+                <span style="font-size:10px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);">17 条</span>
+              </div>
+            </div>
+
+            <div class="session-card" data-session="h3" onclick="loadSession(3)" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:var(--motion-fast) var(--ease-standard);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(30,215,96,0.1);display:grid;place-items:center;flex-shrink:0;color:var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">数据库 Schema 设计</div>
+                <p style="font-size:12px;color:var(--muted);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">用户权限系统的表结构设计</p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">09:30</span>
+                <span style="font-size:10px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);">31 条</span>
+              </div>
+            </div>
+
+            <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;">昨天</div>
+
+            <div class="session-card" data-session="h4" onclick="loadSession(4)" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:var(--motion-fast) var(--ease-standard);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(30,215,96,0.1);display:grid;place-items:center;flex-shrink:0;color:var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:14px;font-weight:600;">CI/CD 流水线调试</div>
+                <p style="font-size:12px;color:var(--muted);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GitHub Actions 构建失败排查</p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">昨天</span>
+                <span style="font-size:10px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);">15 条</span>
+              </div>
+            </div>
+
+            <div class="session-card" data-session="h5" onclick="loadSession(5)" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:var(--motion-fast) var(--ease-standard);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(30,215,96,0.1);display:grid;place-items:center;flex-shrink:0;color:var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:14px;font-weight:600;">API 接口文档讨论</div>
+                <p style="font-size:12px;color:var(--muted);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">RESTful API 设计评审</p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">3 天前</span>
+                <span style="font-size:10px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);">19 条</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="mf-left" id="historyModalCount">6 个对话</div>
+        <button class="btn btn-secondary" onclick="showToast('已清除所有历史记录');document.getElementById('history-list').innerHTML='<div style=text-align:center;padding:48px;color:var(--muted);>已清空</div>';document.getElementById('historyModalCount').textContent='0 个对话'">清空全部</button>
+        <button class="btn btn-secondary" onclick="closeModal('history')">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-diff" onclick="if(event.target===this)closeDiffModal()">
+    <div class="modal-panel diff-modal-panel">
+      <div class="modal-head">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          文件变更
+        </h2>
+        <button class="modal-close" onclick="closeDiffModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="diff-file-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        src/db/queries.sql
+        <span class="diff-stats"><span class="diff-add">+8</span> <span class="diff-del">-3</span></span>
+      </div>
+      <div class="diff-content">
+        <div class="diff-line hunk"><span class="diff-num"></span><span class="diff-code">@@ -1,10 +1,15 @@</span></div>
+        <div class="diff-line context"><span class="diff-num">1</span><span class="diff-code">-- 主订单查询</span></div>
+        <div class="diff-line del"><span class="diff-num">2</span><span class="diff-code">-SELECT *</span></div>
+        <div class="diff-line del"><span class="diff-num">3</span><span class="diff-code">-FROM orders</span></div>
+        <div class="diff-line del"><span class="diff-num">4</span><span class="diff-code">-WHERE status = 'pending';</span></div>
+        <div class="diff-line add"><span class="diff-num">2</span><span class="diff-code">+SELECT</span></div>
+        <div class="diff-line add"><span class="diff-num">3</span><span class="diff-code">+  o.id,</span></div>
+        <div class="diff-line add"><span class="diff-num">4</span><span class="diff-code">+  o.customer_name,</span></div>
+        <div class="diff-line add"><span class="diff-num">5</span><span class="diff-code">+  o.total_amount,</span></div>
+        <div class="diff-line add"><span class="diff-num">6</span><span class="diff-code">+  o.status</span></div>
+        <div class="diff-line add"><span class="diff-num">7</span><span class="diff-code">+FROM orders o</span></div>
+        <div class="diff-line add"><span class="diff-num">8</span><span class="diff-code">+WHERE o.created_at >= '2024-01-01'</span></div>
+        <div class="diff-line add"><span class="diff-num">9</span><span class="diff-code">+  AND o.status IN ('pending', 'processing')</span></div>
+        <div class="diff-line context"><span class="diff-num">10</span><span class="diff-code">ORDER BY o.created_at DESC</span></div>
+        <div class="diff-line add"><span class="diff-num">11</span><span class="diff-code">+LIMIT 100;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>function switchSettingsTab(id, btn) {
+      document.querySelectorAll('.smt').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.smn-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('smt-' + id).classList.add('active');
+      if (btn) btn.classList.add('active');
+      else document.querySelector('.smn-item[data-smtab="' + id + '"]').classList.add('active');
+    }
+
+    function addProvider() {
+      const list = document.getElementById('modal-provider-list');
+      const n = list.children.length + 1;
+      const card = document.createElement('div');
+      card.className = 'provider-card';
+      card.style.cssText = 'background:var(--surface-warm);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;';
+      card.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div style="display:flex;align-items:center;gap:10px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;"></span><span style="font-weight:600;">新提供商 ' + n + '</span></div><button class="btn btn-danger btn-xs" onclick="this.closest(\'.provider-card\').remove()">移除</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;"><div class="field-group"><label>Base URL</label><input class="input input-mono" type="text" value="https://api.example.com/v1" /></div><div class="field-group"><label>API 密钥</label><div style="display:flex;gap:4px;"><input class="input input-mono" type="password" placeholder="sk-…" style="flex:1;" /><button class="btn btn-xs btn-secondary">显示</button><button class="btn btn-xs btn-secondary">测试</button></div></div></div>';
+      list.appendChild(card);
+      showToast('已添加提供商');
+    }
+
+    function loadSession(id) {
+      closeModal('history');
+      showToast('已加载对话 #' + id);
+    }
+
+    function filterHistory() {
+      const q = document.getElementById('history-search').value.toLowerCase();
+      document.querySelectorAll('#history-list .session-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    function renderHistoryTokens() {}
+  </script>
+</body>
+</html>
