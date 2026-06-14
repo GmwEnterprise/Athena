@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Athena · 对话页",
+  "entry": "athena-chat.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "primary": true,
+  "createdAt": "2026-06-14T03:49:07.544Z",
+  "updatedAt": "2026-06-14T03:49:07.550Z",
+  "sourceSkillId": "agent-browser",
+  "designSystemId": "lovable",
+  "metadata": {
+    "identifier": "athena-chat",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

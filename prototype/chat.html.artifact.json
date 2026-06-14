@@ -1,8 +1,8 @@
 {
   "version": 1,
   "kind": "html",
-  "title": "config.html",
-  "entry": "config.html",
+  "title": "chat.html",
+  "entry": "chat.html",
   "renderer": "html",
   "status": "complete",
   "exports": [
@@ -10,8 +10,8 @@
     "pdf",
     "zip"
   ],
-  "createdAt": "2026-06-10T07:40:24.762Z",
-  "updatedAt": "2026-06-10T07:40:24.762Z",
+  "createdAt": "2026-06-14T03:45:27.442Z",
+  "updatedAt": "2026-06-14T03:45:27.442Z",
   "metadata": {
     "inferred": true,
     "reconciled": true

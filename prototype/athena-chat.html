@@ -1,0 +1,929 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Athena — 为 Card 组件添加暗色模式</title>
+<style>
+:root {
+  --bg: #f7f4ed;
+  --surface: #f7f4ed;
+  --surface-warm: var(--surface);
+  --fg: #1c1c1c;
+  --fg-2: rgba(28, 28, 28, 0.83);
+  --muted: #5f5f5d;
+  --meta: rgba(28, 28, 28, 0.4);
+  --border: #eceae4;
+  --border-soft: var(--border);
+  --accent: #ff4d8d;
+  --accent-on: #ffffff;
+  --accent-hover: color-mix(in oklab, var(--accent), black 8%);
+  --accent-active: color-mix(in oklab, var(--accent), black 14%);
+  --success: #16a34a;
+  --warn: #eab308;
+  --danger: #dc2626;
+  --font-display: "Camera Plain Variable", "Camera Plain", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Camera Plain Variable", "Camera Plain", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 36px;
+  --text-3xl: 48px;
+  --text-4xl: 60px;
+  --leading-body: 1.5;
+  --leading-tight: 1.10;
+  --tracking-display: -0.025em;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+  --elev-flat: none;
+  --elev-ring: 0 0 0 1px var(--border);
+  --elev-raised: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --focus-ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --panel: #fbf9f3;
+  --panel-2: #f2efe7;
+  --code-bg: #1c1c1c;
+  --code-fg: #f7f4ed;
+  --user-bubble: #1c1c1c;
+  --user-bubble-fg: #fcfbf8;
+  --win-btn-hover: rgba(28,28,28,0.06);
+  --win-close-hover: #dc2626;
+  --win-close-fg: #ffffff;
+  --sidebar-w: 264px;
+  --sidebar-w-collapsed: 56px;
+  --status-w: 312px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; overflow: hidden;
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; }
+::selection { background: rgba(255, 77, 141, 0.22); }
+
+.app { display: grid; grid-template-rows: 40px 1fr; height: 100vh; width: 100vw; }
+
+.titlebar {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  height: 40px; background: var(--panel); border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+.titlebar-left { display: flex; align-items: center; gap: 10px; padding-left: 14px; }
+.brand-mark {
+  width: 22px; height: 22px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in oklab, var(--accent), #b14cff 40%) 100%);
+  display: grid; place-items: center; color: var(--accent-on);
+  font-weight: 600; font-size: 13px; letter-spacing: -0.02em;
+}
+.brand-name { font-weight: 600; letter-spacing: -0.01em; font-size: 15px; }
+.brand-sub { color: var(--muted); font-size: 12px; }
+.brand-sub::before { content: "·"; margin: 0 8px; color: var(--meta); }
+.titlebar-center { text-align: center; font-size: 13px; color: var(--fg-2); display: flex; align-items: center; gap: 8px; }
+.titlebar-center .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+.titlebar-right { display: flex; justify-content: flex-end; }
+.win-btn { width: 46px; height: 40px; display: grid; place-items: center; color: var(--fg-2); transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast); }
+.win-btn:hover { background: var(--win-btn-hover); }
+.win-btn.close:hover { background: var(--win-close-hover); color: var(--win-close-fg); }
+.win-btn svg { width: 11px; height: 11px; }
+
+.body { display: grid; grid-template-columns: var(--sidebar-w) 1fr var(--status-w); overflow: hidden; min-height: 0; transition: grid-template-columns var(--motion-base) var(--ease-standard); }
+.app.sidebar-collapsed { --sidebar-w: var(--sidebar-w-collapsed); }
+.app.status-hidden .status { display: none; }
+.app.status-hidden .body { grid-template-columns: var(--sidebar-w) 1fr; }
+
+.sidebar { display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--border); min-height: 0; overflow: hidden; }
+.sidebar-collapse { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--muted); transition: background var(--motion-fast), color var(--motion-fast); }
+.sidebar-collapse:hover { background: var(--panel-2); color: var(--fg); }
+.sidebar-collapse svg { width: 17px; height: 17px; }
+.sidebar-collapse .ic-panel { display: none; }
+.app.sidebar-collapsed .sidebar-collapse .ic-menu { display: none; }
+.app.sidebar-collapsed .sidebar-collapse .ic-panel { display: block; }
+.nav-item .nav-kbd { font-family: var(--font-mono); font-size: 10.5px; color: var(--meta); }
+
+.app.sidebar-collapsed .nav-kbd { display: none; }
+.app.sidebar-collapsed .nav-label { display: none; }
+.app.sidebar-collapsed .nav-item { justify-content: center; padding: 8px 0; }
+.app.sidebar-collapsed .history { display: none; }
+.app.sidebar-collapsed .sidebar-foot { flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; margin-top: auto; }
+.app.sidebar-collapsed .foot-btn,
+.app.sidebar-collapsed .sidebar-collapse { width: 34px; height: 34px; }
+
+.nav { display: flex; flex-direction: column; padding: 4px 8px 8px; gap: 1px; }
+.nav-item { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--radius-sm); color: var(--fg-2); font-size: 13px; text-align: left; transition: background var(--motion-fast), color var(--motion-fast); }
+.nav-item:hover { background: var(--panel-2); color: var(--fg); }
+.nav-item.active { background: var(--panel-2); color: var(--fg); }
+.nav-item.active::before { content: ""; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; margin: 0 0 0 -13px; margin-right: 7px; }
+.nav-item svg { width: 16px; height: 16px; flex: none; opacity: 0.8; }
+.nav-item .nav-label { flex: 1; }
+
+.history { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 8px 12px; }
+.history::-webkit-scrollbar { width: 8px; }
+.history::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.12); border-radius: 4px; border: 2px solid var(--panel); }
+.history::-webkit-scrollbar-thumb:hover { background: rgba(28,28,28,0.22); }
+
+.ws-group { margin-top: 10px; }
+.ws-group:first-child { margin-top: 4px; }
+.ws-header { display: flex; align-items: center; gap: 6px; padding: 6px 10px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.ws-header svg { width: 12px; height: 12px; opacity: 0.7; }
+.ws-header .ws-name { flex: 1; }
+.ws-count { font-family: var(--font-mono); font-size: 10px; color: var(--meta); background: var(--panel-2); padding: 0 5px; border-radius: 4px; font-weight: 400; }
+.task-row { display: flex; align-items: flex-start; gap: 6px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--motion-fast); position: relative; }
+.task-row:hover { background: var(--panel-2); }
+.task-row.active { background: var(--panel-2); }
+.task-row.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--accent); border-radius: 2px; }
+.task-pin { width: 12px; height: 12px; flex: none; display: grid; place-items: center; margin-top: 3px; color: var(--meta); opacity: 0; transition: opacity var(--motion-fast), color var(--motion-fast); cursor: pointer; }
+.task-pin svg { width: 12px; height: 12px; }
+.task-row:hover .task-pin { opacity: 0.55; }
+.task-pin:hover { opacity: 1; color: var(--fg); }
+.task-row.pinned .task-pin { opacity: 1; color: var(--accent); }
+.task-row.pinned .task-pin .pin-body { fill: var(--accent); }
+.task-main { flex: 1; min-width: 0; }
+.task-title { font-size: 13px; color: var(--fg); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.task-row.active .task-title { font-weight: 500; }
+.task-time { flex: none; font-family: var(--font-mono); font-size: 11px; color: var(--meta); margin-top: 2px; }
+
+.sidebar-foot { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.foot-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--muted); transition: background var(--motion-fast), color var(--motion-fast); }
+.foot-btn:hover { background: var(--panel-2); color: var(--fg); }
+.foot-btn svg { width: 17px; height: 17px; }
+.foot-user { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.foot-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #b14cff, var(--accent)); display: grid; place-items: center; color: white; font-size: 11px; font-weight: 600; }
+.app.sidebar-collapsed .foot-user { display: none; }
+
+.chat { display: flex; flex-direction: column; background: var(--bg); min-width: 0; min-height: 0; position: relative; }
+.chat-status { display: flex; align-items: center; gap: 14px; height: 34px; padding: 0 20px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+.chat-status .item { display: flex; align-items: center; gap: 6px; }
+.chat-status svg { width: 13px; height: 13px; opacity: 0.8; }
+.chat-status .branch-pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-pill); }
+.chat-status .branch-pill .branch-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.chat-status .sep { color: var(--meta); }
+.chat-status .spacer { flex: 1; }
+.chat-status .toggle-status { display: flex; align-items: center; gap: 5px; padding: 3px 9px; height: 24px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--fg-2); font-size: 11px; transition: background var(--motion-fast); }
+.chat-status .toggle-status:hover { background: var(--panel-2); }
+.app.status-hidden .toggle-status { background: transparent; color: var(--meta); border-color: transparent; }
+
+.chat-stream { flex: 1; min-height: 0; overflow-y: auto; padding: 28px 0 12px; scroll-behavior: smooth; }
+.chat-stream::-webkit-scrollbar { width: 10px; }
+.chat-stream::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.1); border-radius: 5px; border: 3px solid var(--bg); }
+.chat-stream::-webkit-scrollbar-thumb:hover { background: rgba(28,28,28,0.2); }
+
+.msg { padding: 0 40px; margin-bottom: 22px; max-width: 920px; margin-left: auto; margin-right: auto; }
+.msg-user { display: flex; justify-content: flex-end; }
+.msg-user .bubble { max-width: 72%; background: var(--user-bubble); color: var(--user-bubble-fg); padding: 11px 15px; border-radius: 14px 14px 4px 14px; font-size: 14px; line-height: 1.55; box-shadow: rgba(255,255,255,0.16) 0 0.5px 0 0 inset, rgba(0,0,0,0.18) 0 0 0 0.5px inset; }
+.msg-user .bubble code { font-family: var(--font-mono); font-size: 12.5px; background: rgba(247,244,237,0.14); padding: 1px 5px; border-radius: 4px; }
+
+.model-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.model-avatar { width: 26px; height: 26px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--accent), #b14cff); display: grid; place-items: center; color: white; font-weight: 600; font-size: 12px; flex: none; }
+.model-name { font-size: 13px; font-weight: 600; color: var(--fg); }
+.model-role { font-size: 11px; color: var(--meta); }
+
+.md { font-size: 14.5px; line-height: 1.68; color: var(--fg-2); }
+.md > * + * { margin-top: 12px; }
+.md h1, .md h2, .md h3 { color: var(--fg); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+.md h1 { font-size: 22px; margin-top: 22px; }
+.md h2 { font-size: 18px; margin-top: 18px; }
+.md h3 { font-size: 16px; margin-top: 14px; }
+.md p { color: var(--fg-2); }
+.md strong { color: var(--fg); font-weight: 600; }
+.md em { color: var(--fg); }
+.md a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.md ul, .md ol { padding-left: 22px; }
+.md li { margin-top: 5px; color: var(--fg-2); }
+.md li::marker { color: var(--meta); }
+.md blockquote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; color: var(--muted); font-style: italic; background: rgba(255,77,141,0.04); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.md code.inline { font-family: var(--font-mono); font-size: 12.5px; background: var(--panel-2); color: var(--fg); padding: 1.5px 6px; border-radius: 4px; border: 1px solid var(--border); }
+.md pre { background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; font-family: var(--font-mono); }
+.md pre::-webkit-scrollbar { height: 8px; }
+.md pre::-webkit-scrollbar-thumb { background: rgba(247,244,237,0.18); border-radius: 4px; }
+.md pre code { font-family: inherit; background: none; padding: 0; color: inherit; }
+
+.tok-kw { color: #ff8fb4; font-weight: 500; }
+.tok-str { color: #b8e986; }
+.tok-num { color: #f6c177; }
+.tok-com { color: #8a8a86; font-style: italic; }
+.tok-fn { color: #92d5ff; }
+.tok-tag { color: #ff8fb4; }
+.tok-attr { color: #f6c177; }
+.ln { display: inline-block; width: 28px; margin-left: -16px; padding-right: 12px; color: rgba(247,244,237,0.32); text-align: right; user-select: none; }
+
+.thinking { margin: 10px 0 4px -2px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
+.thinking-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--muted); transition: background var(--motion-fast); }
+.thinking-toggle:hover { background: var(--panel-2); }
+.thinking-toggle .chev { width: 12px; height: 12px; transition: transform var(--motion-fast); color: var(--meta); }
+.thinking.open .chev { transform: rotate(90deg); }
+.thinking-toggle .think-label { font-style: italic; }
+.thinking-toggle .think-dots { color: var(--accent); letter-spacing: -1px; }
+.thinking-toggle .think-meta { margin-left: auto; font-size: 11px; font-family: var(--font-mono); color: var(--meta); }
+.thinking-body { display: none; padding: 4px 14px 14px 34px; font-size: 13px; line-height: 1.65; color: var(--muted); border-top: 1px solid var(--border); font-style: italic; }
+.thinking-body p + p { margin-top: 8px; }
+.thinking-body code { font-family: var(--font-mono); font-size: 12px; font-style: normal; background: var(--panel-2); padding: 1px 5px; border-radius: 3px; color: var(--fg-2); }
+.thinking.open .thinking-body { display: block; }
+
+.tool { margin: 6px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
+.tool-head { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; background: var(--panel-2); border-bottom: 1px solid var(--border); cursor: pointer; }
+.tool-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; height: 20px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+.tool-badge.read { background: rgba(92,160,255,0.14); color: #2f74c0; }
+.tool-badge.write { background: rgba(255,143,180,0.16); color: #b03365; }
+.tool-badge.command { background: rgba(247,193,77,0.18); color: #946a00; }
+.tool-badge svg { width: 11px; height: 11px; }
+.tool-target { font-family: var(--font-mono); font-size: 12.5px; color: var(--fg); }
+.tool-target .path { color: var(--muted); }
+.tool-status { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+.tool-status .ok { color: var(--success); }
+.tool-body { padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--fg-2); max-height: 220px; overflow-y: auto; white-space: pre; }
+.tool-body.diff-unified { padding: 0; max-height: 480px; overflow: auto; background: var(--panel); font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; }
+.diff-unified .diff-row { display: block; white-space: pre; padding-right: 14px; }
+.diff-unified .diff-row .sign { display: inline-block; width: 24px; text-align: center; user-select: none; font-weight: 600; }
+.diff-unified .diff-row.del { background: rgba(220,38,38,0.10); color: #991919; }
+.diff-unified .diff-row.del .sign { color: #c0392b; background: rgba(220,38,38,0.16); }
+.diff-unified .diff-row.add { background: rgba(22,163,74,0.10); color: #1a6b34; }
+.diff-unified .diff-row.add .sign { color: #16a34a; background: rgba(22,163,74,0.18); }
+.diff-unified .diff-row.ctx { color: var(--fg-2); }
+.diff-unified .diff-row.ctx .sign { color: transparent; }
+.tool-head .tool-status svg.chev-btn { transition: transform var(--motion-fast) var(--ease-standard); }
+.tool:not(.tool-collapsed) .tool-head .tool-status svg.chev-btn { transform: rotate(180deg); }
+.tool-body::-webkit-scrollbar { width: 8px; height: 8px; }
+.tool-body::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.12); border-radius: 4px; }
+.tool-collapsed .tool-body { display: none; }
+.tool-collapsed .tool-head { border-bottom: none; }
+
+.composer-wrap { padding: 4px 24px 16px; background: linear-gradient(to top, var(--bg) 60%, rgba(247,244,237,0)); }
+.composer { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--elev-raised); overflow: hidden; }
+.composer-textarea { width: 100%; border: none; outline: none; background: none; resize: none; padding: 14px 16px 4px; font-family: var(--font-body); font-size: 14px; line-height: 1.55; color: var(--fg); min-height: 28px; max-height: 180px; }
+.composer-textarea::placeholder { color: var(--meta); }
+.composer-bar { display: flex; align-items: center; gap: 4px; padding: 6px 8px 8px; }
+.cbtn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: var(--radius-sm); color: var(--fg-2); font-size: 12.5px; transition: background var(--motion-fast), color var(--motion-fast); position: relative; }
+.cbtn:hover { background: var(--panel-2); }
+.cbtn svg { width: 15px; height: 15px; opacity: 0.85; }
+.cbtn .chev { width: 11px; height: 11px; opacity: 0.6; transition: transform var(--motion-fast); }
+.cbtn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.cbtn.mono { font-family: var(--font-mono); font-size: 12px; }
+.cbtn.mode-toggle { border: 1px solid var(--border); background: var(--bg); }
+.cbtn.mode-toggle .mode-pill { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 4px; background: var(--fg); color: var(--user-bubble-fg); font-size: 11px; font-weight: 600; font-family: var(--font-mono); }
+
+.ctx-ring { position: relative; width: 28px; height: 28px; }
+.ctx-ring svg { width: 28px; height: 28px; transform: rotate(-90deg); }
+.ctx-ring .track { fill: none; stroke: var(--border); stroke-width: 3; }
+.ctx-ring .fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+.ctx-ring .ctx-label { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 9px; font-weight: 600; color: var(--fg); }
+.cbtn.ctx-btn { padding: 0 8px; }
+.cbtn.ctx-btn:hover .ctx-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+.ctx-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--user-bubble-fg); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--motion-fast), transform var(--motion-fast); font-family: var(--font-mono); }
+.ctx-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--fg); }
+
+.send-btn { width: 32px; height: 32px; display: grid; place-items: center; background: var(--fg); color: var(--user-bubble-fg); border-radius: var(--radius-sm); box-shadow: rgba(255,255,255,0.2) 0 0.5px 0 0 inset, rgba(0,0,0,0.2) 0 0 0 0.5px inset, rgba(0,0,0,0.05) 0 1px 2px 0; transition: opacity var(--motion-fast), transform var(--motion-fast); }
+.send-btn:hover { opacity: 0.9; }
+.send-btn:active { transform: scale(0.96); }
+.send-btn svg { width: 15px; height: 15px; }
+.composer-bar .left { display: flex; align-items: center; gap: 4px; flex: 1; }
+.composer-bar .right { display: flex; align-items: center; gap: 4px; }
+.divider-v { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+.menu { position: absolute; bottom: calc(100% + 6px); left: 0; min-width: 220px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(28,28,28,0.02); padding: 6px; z-index: 50; display: none; font-size: 13px; }
+.menu.open { display: block; animation: menuIn var(--motion-fast) var(--ease-standard); }
+@keyframes menuIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.menu-section-label { padding: 6px 10px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--meta); letter-spacing: 0.06em; }
+.menu-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--motion-fast); }
+.menu-item:hover { background: var(--panel-2); }
+.menu-item.active { background: var(--panel-2); }
+.menu-item .mi-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 5px; background: var(--panel-2); color: var(--muted); flex: none; }
+.menu-item .mi-icon svg { width: 13px; height: 13px; }
+.menu-item .mi-main { flex: 1; min-width: 0; }
+.menu-item .mi-title { font-size: 13px; color: var(--fg); }
+.menu-item .mi-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.menu-item .mi-tag { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--panel-2); color: var(--meta); }
+.menu-item .mi-check { width: 14px; height: 14px; color: var(--accent); flex: none; opacity: 0; }
+.menu-item.active .mi-check { opacity: 1; }
+
+.status { background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.status-tabs { display: flex; align-items: center; gap: 2px; padding: 8px 10px 0; border-bottom: 1px solid var(--border); }
+.status-tab { display: flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; font-size: 12px; color: var(--muted); border-bottom: 2px solid transparent; transition: color var(--motion-fast), border-color var(--motion-fast); }
+.status-tab:hover { color: var(--fg); }
+.status-tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+.status-tab svg { width: 13px; height: 13px; }
+.status-tab .badge { font-family: var(--font-mono); font-size: 10px; background: var(--panel-2); padding: 0 5px; border-radius: 4px; color: var(--muted); }
+.status-close { margin-left: auto; width: 26px; height: 26px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--muted); transition: background var(--motion-fast), color var(--motion-fast); }
+.status-close:hover { background: var(--panel-2); color: var(--fg); }
+.status-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+.status-scroll::-webkit-scrollbar { width: 8px; }
+.status-scroll::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.1); border-radius: 4px; border: 2px solid var(--panel); }
+
+.s-block { padding: 14px 14px; border-bottom: 1px solid var(--border); }
+.s-block:last-child { border-bottom: none; }
+.s-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.s-head svg { width: 13px; height: 13px; opacity: 0.7; }
+.s-head .count { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--meta); font-weight: 400; background: var(--panel-2); padding: 1px 6px; border-radius: 4px; letter-spacing: 0; }
+.s-head .act { font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--accent); cursor: pointer; }
+
+.change-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--radius-sm); font-size: 12px; transition: background var(--motion-fast); cursor: pointer; }
+.change-row:hover { background: var(--panel-2); }
+.change-status { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; flex: none; }
+.change-status.M { background: rgba(247,193,77,0.18); color: #946a00; }
+.change-status.A { background: rgba(22,163,74,0.16); color: #1a6b34; }
+.change-status.D { background: rgba(220,38,38,0.14); color: #991919; }
+.change-path { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.change-path .dir { color: var(--meta); }
+.change-stage { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px; display: grid; place-items: center; flex: none; transition: all var(--motion-fast); }
+.change-row.staged .change-stage { background: var(--accent); border-color: var(--accent); }
+.change-row.staged .change-stage::after { content: ""; width: 8px; height: 4px; border-left: 1.5px solid white; border-bottom: 1.5px solid white; transform: rotate(-45deg) translate(1px,-1px); }
+
+.commit-box { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.commit-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; color: var(--fg); resize: none; min-height: 36px; outline: none; font-family: var(--font-body); }
+.commit-input:focus { box-shadow: var(--focus-ring); border-color: transparent; }
+.commit-actions { display: flex; gap: 6px; }
+.commit-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 30px; padding: 0 12px; background: var(--fg); color: var(--user-bubble-fg); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; box-shadow: rgba(255,255,255,0.2) 0 0.5px 0 0 inset, rgba(0,0,0,0.2) 0 0 0 0.5px inset; transition: opacity var(--motion-fast); }
+.commit-btn:hover { opacity: 0.9; }
+.commit-btn.ghost { background: transparent; color: var(--fg-2); border: 1px solid var(--border); box-shadow: none; }
+.commit-btn svg { width: 13px; height: 13px; }
+
+.ai-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.ai-cell { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+.ai-cell .v { font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--fg); line-height: 1.1; }
+.ai-cell .l { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
+.mcp-list { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.mcp-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: var(--radius-sm); font-size: 12px; }
+.mcp-row:hover { background: var(--bg); }
+.mcp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px rgba(22,163,74,0.18); flex: none; }
+.mcp-name { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); flex: 1; }
+.mcp-tools { font-family: var(--font-mono); font-size: 10px; color: var(--meta); }
+
+.usage-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.usage-row + .usage-row { border-top: 1px dashed var(--border); }
+.usage-name { display: flex; align-items: center; gap: 7px; width: 110px; font-size: 11.5px; color: var(--fg-2); }
+.usage-name .u-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.usage-bar { flex: 1; height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.usage-bar .u-fill { height: 100%; border-radius: 3px; }
+.usage-val { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 64px; text-align: right; }
+
+.todo-row { display: flex; align-items: flex-start; gap: 9px; padding: 6px 0; font-size: 12.5px; }
+.todo-check { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px; display: grid; place-items: center; flex: none; margin-top: 1px; transition: all var(--motion-fast); cursor: pointer; }
+.todo-row.done .todo-check { background: var(--accent); border-color: var(--accent); }
+.todo-row.done .todo-check::after { content: ""; width: 8px; height: 4px; border-left: 1.5px solid white; border-bottom: 1.5px solid white; transform: rotate(-45deg) translate(1px,-1px); }
+.todo-label { flex: 1; color: var(--fg-2); line-height: 1.4; }
+.todo-row.done .todo-label { color: var(--meta); text-decoration: line-through; }
+.todo-progress { margin: 8px 0 4px; height: 5px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.todo-progress .fill { height: 100%; background: var(--accent); border-radius: 3px; }
+.todo-summary { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 4px; }
+
+@media (max-width: 1180px) { :root { --status-w: 280px; } .msg { padding: 0 24px; } }
+@media (max-width: 980px) { :root { --sidebar-w: 220px; --status-w: 260px; } .msg { padding: 0 18px; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="titlebar">
+    <div class="titlebar-left">
+      <div class="brand-mark">A</div>
+      <div>
+        <span class="brand-name">Athena</span>
+        <span class="brand-sub">your powerful AI assistant</span>
+      </div>
+    </div>
+    <div class="titlebar-center">
+      <span class="dot"></span>
+      <span>为 Card 组件添加暗色模式</span>
+    </div>
+    <div class="titlebar-right">
+      <button class="win-btn" title="最小化" onclick="flashWin(this)"><svg viewBox="0 0 12 12"><rect x="1" y="5.5" width="10" height="1" fill="currentColor"/></svg></button>
+      <button class="win-btn" title="最大化" onclick="flashWin(this)"><svg viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1"/></svg></button>
+      <button class="win-btn close" title="关闭" onclick="flashWin(this)"><svg viewBox="0 0 12 12"><path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside class="sidebar">
+      <nav class="nav">
+        <button class="nav-item">
+          <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="nav-label">新建任务</span>
+          <span class="nav-kbd">⌘N</span>
+        </button>
+        <button class="nav-item">
+          <svg viewBox="0 0 16 16"><path d="M2 4a1 1 0 011-1h3l2 2h5a1 1 0 011 1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+          <span class="nav-label">打开工作区</span>
+        </button>
+        <button class="nav-item">
+          <svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L2.2 5.8l4-.6L8 1.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          <span class="nav-label">技能</span>
+        </button>
+      </nav>
+
+      <div class="history" id="history">
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">athena-web</span>
+            <span class="ws-count">4</span>
+          </div>
+          <div class="task-row active">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">为 Card 组件添加暗色模式</div>
+            </div>
+            <span class="task-time">刚刚</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">修复登录页表单校验</div>
+            </div>
+            <span class="task-time">3m</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">重构 API 客户端为 hooks 形态</div>
+            </div>
+            <span class="task-time">1h</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">用户头像上传与裁剪</div>
+            </div>
+            <span class="task-time">昨天</span>
+          </div>
+        </div>
+
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">my-blog</span>
+            <span class="ws-count">2</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">迁移到 Astro 3.0</div>
+            </div>
+            <span class="task-time">5月31日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">修复 RSS 输出乱码</div>
+            </div>
+            <span class="task-time">5月28日</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-foot">
+        <button class="foot-btn" title="设置">
+          <svg viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8.5 1.5v2M8.5 13.5v2M14.5 3.9l-1.4 1.4M4 14.5l-1.4 1.4M1.5 8.5h2M13.5 8.5h2M14.5 13.1l-1.4-1.4M4 2.5L2.6 1.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+        <div class="foot-user">
+          <div class="foot-avatar">林</div>
+          <div class="foot-info">
+            <div style="color:var(--fg);font-size:12px;font-weight:500;">林深</div>
+            <div style="font-size:10.5px;">Pro · 试用剩 8 天</div>
+          </div>
+        </div>
+        <button class="sidebar-collapse" id="btnSidebar" title="折叠侧栏">
+          <svg class="ic-menu" viewBox="0 0 16 16"><path d="M3 4h10M3 8h10M3 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg class="ic-panel" viewBox="0 0 16 16"><rect x="2" y="2.5" width="12" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 2.5v11" stroke="currentColor" stroke-width="1.3"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="chat">
+      <div class="chat-status">
+        <div class="item">
+          <svg viewBox="0 0 14 14"><path d="M2 4a1 1 0 011-1h2.5l1 1H11a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span>~/projects/athena-web</span>
+        </div>
+        <span class="sep">/</span>
+        <div class="branch-pill"><span class="branch-dot"></span><span>main</span></div>
+        <span class="sep">·</span>
+        <div class="item">
+          <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <span>4 files changed</span>
+        </div>
+        <div class="spacer"></div>
+        <button class="toggle-status" id="btnStatus">
+          <svg viewBox="0 0 14 14"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M9.5 1.5v11" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span id="statusBtnLabel">状态区</span>
+        </button>
+      </div>
+
+      <div class="chat-stream" id="stream">
+        <div class="msg msg-user">
+          <div class="bubble">帮我给 <code>src/components/Card.tsx</code> 加上暗色模式支持。用户切换主题时，卡片背景、文字、边框颜色都要跟着变。项目用的是 Tailwind v3 + class 策略。</div>
+        </div>
+
+        <div class="msg msg-model">
+          <div class="model-head">
+            <div class="model-avatar">A</div>
+            <div><div class="model-name">GLM-5.2</div><div class="model-role">thinking · planner</div></div>
+          </div>
+
+          <div class="thinking" id="think1">
+            <button class="thinking-toggle" onclick="toggleThink('think1')">
+              <svg class="chev" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span class="think-label">思考过程</span>
+              <span class="think-dots">···</span>
+              <span class="think-meta">8.4s · 1.2k tok</span>
+            </button>
+            <div class="thinking-body">
+              <p>需求拆解：需要响应式主题切换。已知技术栈是 <code>Tailwind v3</code> + <code>class</code> 策略，所以全局应该已经配好了 <code>darkMode: 'class'</code>，只要确认一下 tailwind.config。</p>
+              <p>组件方案：直接用 <code>dark:</code> 前缀即可，比 CSS variables 更轻。但用户提到"背景、文字、边框都要变"，说明现状是硬编码颜色——先读取文件确认。</p>
+              <p>额外加分项：暴露 <code>variant</code> prop 让父组件强制覆盖主题，做无障碍的 <code>prefers-color-scheme</code> fallback。</p>
+            </div>
+          </div>
+
+          <div class="tool tool-collapsed">
+            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+              <span class="tool-badge read"><svg viewBox="0 0 12 12"><path d="M1.5 2.5a1 1 0 011-1h3l1 1h3a1 1 0 011 1v6a1 1 0 01-1 1H2.5a1 1 0 01-1-1v-7z" fill="none" stroke="currentColor" stroke-width="1"/></svg>read</span>
+              <span class="tool-target"><span class="path">src/components/</span>Card.tsx</span>
+              <span class="tool-status"><span class="ok">✓ 42 行</span><svg width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="tool-body"><span style="color:var(--meta);">1</span>  <span class="tok-kw">import</span> React <span class="tok-kw">from</span> <span class="tok-str">'react'</span>
+<span style="color:var(--meta);">…</span>
+<span class="tok-kw">export const</span> <span class="tok-fn">Card</span> = ({ title, children }: Props) =&gt; (
+  &lt;<span class="tok-tag">div</span> <span class="tok-attr">className</span>=<span class="tok-str">"bg-white border border-gray-200 rounded-xl p-5"</span>&gt;
+    &lt;<span class="tok-tag">h3</span> <span class="tok-attr">className</span>=<span class="tok-str">"text-gray-900 font-semibold"</span>&gt;{title}&lt;/<span class="tok-tag">h3</span>&gt;
+    &lt;<span class="tok-tag">div</span> <span class="tok-attr">className</span>=<span class="tok-str">"text-gray-600 mt-2"</span>&gt;{children}&lt;/<span class="tok-tag">div</span>&gt;
+  &lt;/<span class="tok-tag">div</span>&gt;
+)</div>
+          </div>
+
+          <div class="md">
+            <p>看明白了，现在的颜色是硬编码的 <code class="inline">bg-white</code> / <code class="inline">text-gray-900</code>，加 <code class="inline">dark:</code> 变体最直接。我帮你改一下：</p>
+          </div>
+        </div>
+
+        <div class="msg msg-model">
+          <div class="tool tool-collapsed">
+            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+              <span class="tool-badge write"><svg viewBox="0 0 12 12"><path d="M2 10l1.5-4 5-5 2.5 2.5-5 5L2 10z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>write</span>
+              <span class="tool-target"><span class="path">src/components/</span>Card.tsx</span>
+              <span class="tool-status"><span class="ok">✓ 已写入 · +3 −3</span><svg class="chev-btn" width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="tool-body diff-unified">
+              <div class="diff-row ctx"><span class="sign"> </span>export const Card = ({ title, children }: Props) =&gt; (</div>
+              <div class="diff-row del"><span class="sign">-</span>  &lt;div className="bg-white border border-gray-200 rounded-xl p-5"&gt;</div>
+              <div class="diff-row add"><span class="sign">+</span>  &lt;div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 transition-colors"&gt;</div>
+              <div class="diff-row del"><span class="sign">-</span>    &lt;h3 className="text-gray-900 font-semibold"&gt;{title}&lt;/h3&gt;</div>
+              <div class="diff-row add"><span class="sign">+</span>    &lt;h3 className="text-gray-900 dark:text-gray-50 font-semibold"&gt;{title}&lt;/h3&gt;</div>
+              <div class="diff-row del"><span class="sign">-</span>    &lt;div className="text-gray-600 mt-2"&gt;{children}&lt;/div&gt;</div>
+              <div class="diff-row add"><span class="sign">+</span>    &lt;div className="text-gray-600 dark:text-gray-300 mt-2"&gt;{children}&lt;/div&gt;</div>
+              <div class="diff-row ctx"><span class="sign"> </span>  &lt;/div&gt;</div>
+              <div class="diff-row ctx"><span class="sign"> </span>)</div>
+            </div>
+          </div>
+
+          <div class="md" style="margin-top:14px;">
+            <p>改了三处：</p>
+            <ul>
+              <li>外层容器加 <code class="inline">dark:bg-gray-900 dark:border-gray-700</code>，并补了 <code class="inline">transition-colors</code> 让切换更顺滑</li>
+              <li>标题 <code class="inline">dark:text-gray-50</code>，正文 <code class="inline">dark:text-gray-300</code>，保留层级对比</li>
+            </ul>
+            <blockquote>注意：这套方案依赖根 <code class="inline">&lt;html&gt;</code> 上能切换 <code class="inline">dark</code> 类。如果还没接主题切换器，下一步可以帮你加一个 <code class="inline">useTheme</code> hook。</blockquote>
+          </div>
+        </div>
+
+        <div class="msg msg-user">
+          <div class="bubble">对，再帮我加个 <code>useTheme</code> hook 吧，要能持久化到 localStorage，并且首次访问跟随系统偏好。</div>
+        </div>
+
+        <div class="msg msg-model">
+          <div class="model-head">
+            <div class="model-avatar">A</div>
+            <div><div class="model-name">GLM-5.2</div><div class="model-role">coding</div></div>
+          </div>
+
+          <div class="thinking open" id="think2">
+            <button class="thinking-toggle" onclick="toggleThink('think2')">
+              <svg class="chev" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span class="think-label">思考过程</span>
+              <span class="think-dots">···</span>
+              <span class="think-meta">3.1s · 0.6k tok</span>
+            </button>
+            <div class="thinking-body">
+              <p>三件事：1) 初始值优先级 <code>localStorage &gt; prefers-color-scheme &gt; light</code>；2) 监听系统主题变化，仅在"未手动设定"时跟随；3) SSR 安全——<code>window</code> 访问放 effect 里。</p>
+              <p>用 <code>useSyncExternalStore</code> 比手写订阅更稳，但项目里还没用过，保持简单用 <code>useEffect</code> + 自定义事件。</p>
+            </div>
+          </div>
+
+          <div class="tool tool-collapsed">
+            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+              <span class="tool-badge write"><svg viewBox="0 0 12 12"><path d="M2 10l1.5-4 5-5 2.5 2.5-5 5L2 10z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>write</span>
+              <span class="tool-target"><span class="path">src/hooks/</span>useTheme.ts</span>
+              <span class="tool-status"><span class="ok">✓ 新建 · 28 行</span><svg class="chev-btn" width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="tool-body diff-unified">
+              <div class="diff-row add"><span class="sign">+</span>import { useEffect, useState } from 'react'</div>
+              <div class="diff-row add"><span class="sign">+</span></div>
+              <div class="diff-row add"><span class="sign">+</span>type Theme = 'light' | 'dark'</div>
+              <div class="diff-row add"><span class="sign">+</span>const KEY = 'athena-theme'</div>
+              <div class="diff-row add"><span class="sign">+</span></div>
+              <div class="diff-row add"><span class="sign">+</span>export function useTheme() {</div>
+              <div class="diff-row add"><span class="sign">+</span>  const [theme, setTheme] = useState&lt;Theme&gt;(() =&gt; {</div>
+              <div class="diff-row add"><span class="sign">+</span>    if (typeof window === 'undefined') return 'light'</div>
+              <div class="diff-row add"><span class="sign">+</span>    const saved = localStorage.getItem(KEY) as Theme | null</div>
+              <div class="diff-row add"><span class="sign">+</span>    if (saved) return saved</div>
+              <div class="diff-row add"><span class="sign">+</span>    return window.matchMedia('(prefers-color-scheme: dark)').matches</div>
+              <div class="diff-row add"><span class="sign">+</span>      ? 'dark' : 'light'</div>
+              <div class="diff-row add"><span class="sign">+</span>  })</div>
+              <div class="diff-row add"><span class="sign">+</span></div>
+              <div class="diff-row add"><span class="sign">+</span>  useEffect(() =&gt; {</div>
+              <div class="diff-row add"><span class="sign">+</span>    const root = document.documentElement</div>
+              <div class="diff-row add"><span class="sign">+</span>    root.classList.toggle('dark', theme === 'dark')</div>
+              <div class="diff-row add"><span class="sign">+</span>    localStorage.setItem(KEY, theme)</div>
+              <div class="diff-row add"><span class="sign">+</span>  }, [theme])</div>
+              <div class="diff-row add"><span class="sign">+</span></div>
+              <div class="diff-row add"><span class="sign">+</span>  return { theme, toggle: () =&gt; setTheme(t =&gt; t === 'dark' ? 'light' : 'dark') }</div>
+              <div class="diff-row add"><span class="sign">+</span>}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="msg msg-model">
+          <div class="tool">
+            <div class="tool-head">
+              <span class="tool-badge command"><svg viewBox="0 0 12 12"><path d="M2 3h8M2 6h5M2 9h3" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>command</span>
+              <span class="tool-target"><span style="color:var(--meta);">$</span> pnpm build</span>
+              <span class="tool-status"><span class="ok">✓ exit 0 · 4.2s</span></span>
+            </div>
+            <div class="tool-body"><span style="color:var(--success);">✓</span> built in 4.21s
+<span style="color:var(--muted);">  dist/index.html              0.46 kB │ gzip:  0.30 kB
+  dist/assets/Card-<span style="color:var(--fg);">a8f3c2</span>.js   1.20 kB │ gzip:  0.64 kB
+  dist/assets/useTheme-<span style="color:var(--fg);">d1e9b4</span>.js 0.82 kB │ gzip:  0.45 kB
+  dist/assets/index-<span style="color:var(--fg);">7c2af1</span>.css  14.8 kB │ gzip:  3.71 kB</span></div>
+          </div>
+
+          <div class="md" style="margin-top:14px;">
+            <p>构建过了 ✅。用法很简单：</p>
+            <pre><code><span class="tok-kw">import</span> { useTheme } <span class="tok-kw">from</span> <span class="tok-str">'@/hooks/useTheme'</span>
+
+<span class="tok-kw">function</span> <span class="tok-fn">ThemeToggle</span>() {
+  <span class="tok-kw">const</span> { theme, toggle } = <span class="tok-fn">useTheme</span>()
+  <span class="tok-kw">return</span> &lt;<span class="tok-tag">button</span> <span class="tok-attr">onClick</span>={toggle}&gt;{theme}&lt;/<span class="tok-tag">button</span>&gt;
+}</code></pre>
+            <p>要不要顺手把 <code class="inline">App.tsx</code> 顶栏加个切换按钮？</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea class="composer-textarea" id="input" placeholder="向 Athena 发送消息…  (⌘ Enter 发送 / Shift+Enter 换行)" rows="1"></textarea>
+          <div class="composer-bar">
+            <div class="left">
+              <button class="cbtn" title="添加文件">
+                <svg viewBox="0 0 15 15"><path d="M7.5 2v11M2 7.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <span>添加文件</span>
+              </button>
+              <button class="cbtn mode-toggle" id="modeBtn" title="Ask / Auto 模式切换" onclick="cycleMode()">
+                <span class="mode-pill" id="modePill">ask</span>
+                <span class="chev" style="width:10px;height:10px;"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+              </button>
+            </div>
+            <div class="right">
+              <button class="cbtn ctx-btn" title="上下文用量">
+                <div class="ctx-ring">
+                  <svg viewBox="0 0 28 28">
+                    <circle class="track" cx="14" cy="14" r="11"/>
+                    <circle class="fill" cx="14" cy="14" r="11" stroke-dasharray="69.1" stroke-dashoffset="24.2"/>
+                  </svg>
+                  <span class="ctx-label">65%</span>
+                </div>
+                <span class="ctx-tip">84.2k / 128k tokens</span>
+              </button>
+
+              <div style="position:relative;">
+                <button class="cbtn mono" aria-expanded="false" id="modelBtn" onclick="toggleMenu('modelMenu', this)">
+                  <svg viewBox="0 0 15 15" style="opacity:0.6;"><circle cx="7.5" cy="7.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M7.5 1.5v2M7.5 11.5v2M1.5 7.5h2M11.5 7.5h2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  <span>GLM-5.2</span>
+                  <span class="chev"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                </button>
+                <div class="menu" id="modelMenu">
+                  <div class="menu-section-label">推荐模型</div>
+                  <div class="menu-item active" onclick="pickModel(this,'GLM-5.2')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M6.5 1l1.5 3 3 .5-2.2 2.1.5 3-2.8-1.5L3.7 9.6l.5-3L2 4.5l3-.5L6.5 1z" fill="none" stroke="currentColor" stroke-width="1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">GLM-5.2</div><div class="mi-sub">旗舰 · 200K 上下文 · 推理强</div></div>
+                    <span class="mi-tag">default</span>
+                  </div>
+                  <div class="menu-item" onclick="pickModel(this,'GLM-5.2-Air')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M2 6.5h9M6.5 2v9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">GLM-5.2-Air</div><div class="mi-sub">轻量 · 低延迟 · 适合对话</div></div>
+                  </div>
+                  <div class="menu-item" onclick="pickModel(this,'Claude Sonnet 4.5')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">Claude Sonnet 4.5</div><div class="mi-sub">长文写作 · 代码理解</div></div>
+                  </div>
+                  <div class="menu-item" onclick="pickModel(this,'DeepSeek-V3')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M2 11L6.5 2 11 11" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">DeepSeek-V3</div><div class="mi-sub">性价比 · 数学推理</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="position:relative;">
+                <button class="cbtn mono" aria-expanded="false" id="thinkBtn" onclick="toggleMenu('thinkMenu', this)">
+                  <svg viewBox="0 0 15 15" style="opacity:0.6;"><path d="M7.5 2.5a3 3 0 00-2 5.2c.5.4.8.9.8 1.5v.8h2.4v-.8c0-.6.3-1.1.8-1.5a3 3 0 00-2-5.2zM6 12.5h3M6.5 14.5h2" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  <span id="thinkLabel">think: medium</span>
+                  <span class="chev"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                </button>
+                <div class="menu" id="thinkMenu">
+                  <div class="menu-section-label">思维程度</div>
+                  <div class="menu-item" onclick="pickThink(this,'off','think: off')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="4" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">关闭</div><div class="mi-sub">最快响应 · 不展示思维链</div></div>
+                  </div>
+                  <div class="menu-item" onclick="pickThink(this,'low','think: low')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M3 9.5L6.5 3 10 9.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">轻量</div><div class="mi-sub">简单推理 · 约省 60% 时间</div></div>
+                  </div>
+                  <div class="menu-item active" onclick="pickThink(this,'medium','think: medium')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M3 10L6.5 3 10 10M4.5 7.5h4" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">中等</div><div class="mi-sub">默认 · 平衡速度与质量</div></div>
+                    <span class="mi-tag">default</span>
+                  </div>
+                  <div class="menu-item" onclick="pickThink(this,'high','think: high')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M2 10L6.5 2 11 10M3.5 7h6" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">深度</div><div class="mi-sub">复杂问题 · 完整思维链</div></div>
+                  </div>
+                  <div class="menu-item" onclick="pickThink(this,'max','think: max')">
+                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M1.5 10L6.5 1 11.5 10M3 6.5h7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                    <div class="mi-main"><div class="mi-title">最大</div><div class="mi-sub">研究级 · 可能耗时数分钟</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="divider-v"></div>
+
+              <button class="send-btn" id="sendBtn" title="发送 (⌘ Enter)" onclick="flashSend(this)">
+                <svg viewBox="0 0 15 15"><path d="M2 7.5h9M7 3.5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="status">
+      <div class="status-tabs">
+        <button class="status-tab active">
+          <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="2.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          概览
+        </button>
+        <button class="status-tab">
+          <svg viewBox="0 0 14 14"><path d="M2 4a1 1 0 011-1h2.5l1 1H11a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          文件
+          <span class="badge">4</span>
+        </button>
+        <button class="status-close" id="btnCloseStatus" title="隐藏状态区">
+          <svg viewBox="0 0 14 14"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="status-scroll">
+        <div class="s-block">
+          <div class="s-head">
+            <svg viewBox="0 0 13 13"><circle cx="3.5" cy="3.5" r="2" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="3.5" cy="9.5" r="2" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="9.5" cy="6.5" r="2" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 5.5v2M5.5 3.5h2a2 2 0 012 2" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+            源代码管理
+            <span class="count">4 · +48 −12</span>
+          </div>
+          <div class="change-row staged"><div class="change-stage"></div><div class="change-status M">M</div><div class="change-path"><span class="dir">src/components/</span>Card.tsx</div></div>
+          <div class="change-row staged"><div class="change-stage"></div><div class="change-status A">A</div><div class="change-path"><span class="dir">src/hooks/</span>useTheme.ts</div></div>
+          <div class="change-row"><div class="change-stage"></div><div class="change-status M">M</div><div class="change-path"><span class="dir">src/</span>App.tsx</div></div>
+          <div class="change-row"><div class="change-stage"></div><div class="change-status M">M</div><div class="change-path"><span class="dir">src/styles/</span>global.css</div></div>
+          <div class="commit-box">
+            <textarea class="commit-input" placeholder="提交信息（如：feat(card): 支持暗色模式）"></textarea>
+            <div class="commit-actions">
+              <button class="commit-btn"><svg viewBox="0 0 13 13"><path d="M2 6.5a4 4 0 014-4h1a4 4 0 014 4M2 6.5a4 4 0 004 4h1M10 6.5h2M1 6.5h2" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>提交 (2)</button>
+              <button class="commit-btn ghost" title="同步"><svg viewBox="0 0 13 13"><path d="M2 6.5a4 4 0 014-4M11 6.5a4 4 0 01-4 4M9 1.5l-3 1 1 3M4 11.5l3-1-1-3" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>同步</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-block">
+          <div class="s-head">
+            <svg viewBox="0 0 13 13"><path d="M6.5 1l1.3 2.7 2.9.4-2.1 2 .5 2.9L6.5 7.6 3.9 9l.5-2.9-2.1-2 2.9-.4L6.5 1z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>
+            AI 能力
+          </div>
+          <div class="ai-grid">
+            <div class="ai-cell"><div class="v">14</div><div class="l">Skills</div></div>
+            <div class="ai-cell"><div class="v">3</div><div class="l">子代理</div></div>
+            <div class="ai-cell"><div class="v">3</div><div class="l">MCP</div></div>
+          </div>
+          <div class="mcp-list">
+            <div class="mcp-row"><span class="mcp-dot"></span><span class="mcp-name">filesystem</span><span class="mcp-tools">8 tools</span></div>
+            <div class="mcp-row"><span class="mcp-dot"></span><span class="mcp-name">git</span><span class="mcp-tools">12 tools</span></div>
+            <div class="mcp-row"><span class="mcp-dot"></span><span class="mcp-name">browser</span><span class="mcp-tools">5 tools</span></div>
+          </div>
+        </div>
+
+        <div class="s-block">
+          <div class="s-head">
+            <svg viewBox="0 0 13 13"><path d="M2 10l2-3 2 2 2-4 2 2 1-1" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            本会话用量
+            <span class="count">22.6k tok</span>
+          </div>
+          <div class="usage-row">
+            <div class="usage-name"><span class="u-dot" style="background:var(--accent);"></span>GLM-5.2</div>
+            <div class="usage-bar"><div class="u-fill" style="width:82%;background:var(--accent);"></div></div>
+            <div class="usage-val">12.4k</div>
+          </div>
+          <div class="usage-row">
+            <div class="usage-name"><span class="u-dot" style="background:#b14cff;"></span>Sonnet 4.5</div>
+            <div class="usage-bar"><div class="u-fill" style="width:54%;background:#b14cff;"></div></div>
+            <div class="usage-val">8.2k</div>
+          </div>
+          <div class="usage-row">
+            <div class="usage-name"><span class="u-dot" style="background:var(--muted);"></span>Embed</div>
+            <div class="usage-bar"><div class="u-fill" style="width:13%;background:var(--muted);"></div></div>
+            <div class="usage-val">2.0k</div>
+          </div>
+        </div>
+
+        <div class="s-block">
+          <div class="s-head">
+            <svg viewBox="0 0 13 13"><path d="M2 3.5h2l1 1h5v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-6z" fill="none" stroke="currentColor" stroke-width="1"/><path d="M4 6.5l1.5 1.5L8 5.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            任务清单
+            <span class="act">编辑</span>
+          </div>
+          <div class="todo-summary"><span>进度</span><span>3 / 5</span></div>
+          <div class="todo-progress"><div class="fill" style="width:60%;"></div></div>
+          <div style="margin-top:8px;">
+            <div class="todo-row done"><div class="todo-check"></div><div class="todo-label">分析 Card.tsx 现有结构</div></div>
+            <div class="todo-row done"><div class="todo-check"></div><div class="todo-label">添加 useTheme hook（持久化 + 系统偏好）</div></div>
+            <div class="todo-row done"><div class="todo-check"></div><div class="todo-label">重写 Card.tsx 支持 dark: 变体</div></div>
+            <div class="todo-row"><div class="todo-check"></div><div class="todo-label">更新 global.css 全局过渡</div></div>
+            <div class="todo-row"><div class="todo-check"></div><div class="todo-label">运行构建测试并写单元测试</div></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const app = document.getElementById('app');
+document.getElementById('btnSidebar').addEventListener('click', () => {
+  app.classList.toggle('sidebar-collapsed');
+  document.getElementById('btnSidebar').title = app.classList.contains('sidebar-collapsed') ? '展开侧栏' : '折叠侧栏';
+});
+function setStatusVisible(v){ app.classList.toggle('status-hidden', !v); document.getElementById('statusBtnLabel').textContent = v ? '状态区' : '显示状态区'; }
+document.getElementById('btnStatus').addEventListener('click', () => setStatusVisible(app.classList.contains('status-hidden')));
+document.getElementById('btnCloseStatus').addEventListener('click', () => setStatusVisible(false));
+function toggleThink(id){ document.getElementById(id).classList.toggle('open'); }
+function toggleMenu(menuId, btn){ const menu = document.getElementById(menuId); const isOpen = menu.classList.contains('open'); document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); document.querySelectorAll('.cbtn[aria-expanded]').forEach(b => b.setAttribute('aria-expanded','false')); if(!isOpen){ menu.classList.add('open'); btn.setAttribute('aria-expanded','true'); } }
+document.addEventListener('click', (e) => { if(!e.target.closest('.cbtn') && !e.target.closest('.menu')){ document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); document.querySelectorAll('.cbtn[aria-expanded]').forEach(b => b.setAttribute('aria-expanded','false')); } });
+function pickModel(el, name){ document.querySelectorAll('#modelMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.querySelector('#modelBtn span:nth-of-type(1)').textContent = name; document.getElementById('modelMenu').classList.remove('open'); document.getElementById('modelBtn').setAttribute('aria-expanded','false'); }
+function pickThink(el, val, label){ document.querySelectorAll('#thinkMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.getElementById('thinkLabel').textContent = label; document.getElementById('thinkMenu').classList.remove('open'); document.getElementById('thinkBtn').setAttribute('aria-expanded','false'); }
+const MODES = ['ask','auto','plan']; let modeIdx = 0;
+function cycleMode(){ modeIdx = (modeIdx + 1) % MODES.length; document.getElementById('modePill').textContent = MODES[modeIdx]; }
+function flashSend(btn){ btn.style.transform = 'scale(0.9)'; setTimeout(() => btn.style.transform = '', 120); }
+function flashWin(btn){ btn.style.background = btn.classList.contains('close') ? 'var(--win-close-hover)' : 'var(--win-btn-hover)'; setTimeout(() => btn.style.background = '', 200); }
+const input = document.getElementById('input');
+input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 180) + 'px'; });
+input.addEventListener('keydown', (e) => { if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); flashSend(document.getElementById('sendBtn')); } });
+document.querySelectorAll('.task-row').forEach(row => { row.addEventListener('click', () => { document.querySelectorAll('.task-row').forEach(r => r.classList.remove('active')); row.classList.add('active'); }); });
+document.querySelectorAll('.ws-group').forEach(group => { group.querySelectorAll('.task-row').forEach((r, i) => r.dataset.oi = i); });
+function arrangeGroup(group){
+  const header = group.querySelector(':scope > .ws-header');
+  const rows = Array.from(group.querySelectorAll(':scope > .task-row'));
+  rows.sort((a, b) => {
+    const pa = a.classList.contains('pinned') ? 0 : 1;
+    const pb = b.classList.contains('pinned') ? 0 : 1;
+    if (pa !== pb) return pa - pb;
+    return (+a.dataset.oi) - (+b.dataset.oi);
+  });
+  let anchor = header;
+  rows.forEach(r => { anchor.insertAdjacentElement('afterend', r); anchor = r; });
+}
+document.querySelectorAll('.task-pin').forEach(pin => {
+  pin.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const row = pin.closest('.task-row');
+    row.classList.toggle('pinned');
+    arrangeGroup(row.closest('.ws-group'));
+  });
+});
+document.querySelectorAll('.change-row').forEach(row => { row.addEventListener('click', () => row.classList.toggle('staged')); });
+document.querySelectorAll('.todo-row').forEach(row => { row.querySelector('.todo-check').addEventListener('click', () => row.classList.toggle('done')); });
+</script>
+</body>
+</html>
