@@ -7,25 +7,26 @@
 <title>Athena — 为 Card 组件添加暗色模式</title>
 <style>
 :root {
-  --bg: #f7f4ed;
-  --surface: #f7f4ed;
-  --surface-warm: var(--surface);
-  --fg: #1c1c1c;
-  --fg-2: rgba(28, 28, 28, 0.83);
-  --muted: #5f5f5d;
-  --meta: rgba(28, 28, 28, 0.4);
-  --border: #eceae4;
-  --border-soft: var(--border);
-  --accent: #ff4d8d;
-  --accent-on: #ffffff;
-  --accent-hover: color-mix(in oklab, var(--accent), black 8%);
-  --accent-active: color-mix(in oklab, var(--accent), black 14%);
-  --success: #16a34a;
-  --warn: #eab308;
-  --danger: #dc2626;
-  --font-display: "Camera Plain Variable", "Camera Plain", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Camera Plain Variable", "Camera Plain", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  --bg: #f5f4ed;
+  --surface: #faf9f5;
+  --surface-warm: #e8e6dc;
+  --fg: #141413;
+  --fg-2: #3d3d3a;
+  --muted: #504e49;
+  --meta: #6b6a64;
+  --border: #e8e6dc;
+  --border-soft: #e5e3d8;
+  --accent: #1b365d;
+  --accent-on: #faf9f5;
+  --accent-light: #2d5a8a;
+  --accent-hover: var(--accent);
+  --accent-active: #142a48;
+  --success: #4a6b3a;
+  --warn: #8a6b1f;
+  --danger: #8a3a30;
+  --font-display: "TsangerJinKai02", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
+  --font-body: "TsangerJinKai02", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", Consolas, Monaco, "TsangerJinKai02", "Source Han Serif SC", monospace;
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
@@ -34,7 +35,7 @@
   --text-2xl: 36px;
   --text-3xl: 48px;
   --text-4xl: 60px;
-  --leading-body: 1.5;
+  --leading-body: 1.55;
   --leading-tight: 1.10;
   --tracking-display: -0.025em;
   --space-1: 4px;
@@ -46,25 +47,25 @@
   --space-8: 32px;
   --space-12: 48px;
   --radius-sm: 6px;
-  --radius-md: 12px;
+  --radius-md: 8px;
   --radius-lg: 16px;
   --radius-pill: 9999px;
   --elev-flat: none;
   --elev-ring: 0 0 0 1px var(--border);
-  --elev-raised: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --focus-ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  --elev-raised: 0 4px 24px rgba(0, 0, 0, 0.05);
+  --focus-ring: 0 0 0 2px var(--accent-active);
   --motion-fast: 150ms;
   --motion-base: 200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --panel: #fbf9f3;
-  --panel-2: #f2efe7;
-  --code-bg: #1c1c1c;
-  --code-fg: #f7f4ed;
-  --user-bubble: #1c1c1c;
-  --user-bubble-fg: #fcfbf8;
-  --win-btn-hover: rgba(28,28,28,0.06);
-  --win-close-hover: #dc2626;
-  --win-close-fg: #ffffff;
+  --panel: #faf9f5;
+  --panel-2: #e8e6dc;
+  --code-bg: #141413;
+  --code-fg: #faf9f5;
+  --user-bubble: #141413;
+  --user-bubble-fg: #faf9f5;
+  --win-btn-hover: rgba(20,20,19,0.06);
+  --win-close-hover: #8a3a30;
+  --win-close-fg: #faf9f5;
   --sidebar-w: 264px;
   --sidebar-w-collapsed: 56px;
   --status-w: 312px;
@@ -79,7 +80,7 @@ html, body {
 }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 input, textarea { font: inherit; color: inherit; }
-::selection { background: rgba(255, 77, 141, 0.22); }
+::selection { background: rgba(27, 54, 93, 0.20); }
 
 .app { display: grid; grid-template-rows: 40px 1fr; height: 100vh; width: 100vw; }
 
@@ -91,15 +92,15 @@ input, textarea { font: inherit; color: inherit; }
 .titlebar-left { display: flex; align-items: center; gap: 10px; padding-left: 14px; }
 .brand-mark {
   width: 22px; height: 22px; border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in oklab, var(--accent), #b14cff 40%) 100%);
+  background: var(--accent);
   display: grid; place-items: center; color: var(--accent-on);
-  font-weight: 600; font-size: 13px; letter-spacing: -0.02em;
+  font-weight: 500; font-size: 13px; letter-spacing: -0.02em;
 }
-.brand-name { font-weight: 600; letter-spacing: -0.01em; font-size: 15px; }
+.brand-name { font-weight: 500; letter-spacing: -0.01em; font-size: 15px; }
 .brand-sub { color: var(--muted); font-size: 12px; }
 .brand-sub::before { content: "·"; margin: 0 8px; color: var(--meta); }
 .titlebar-center { text-align: center; font-size: 13px; color: var(--fg-2); display: flex; align-items: center; gap: 8px; }
-.titlebar-center .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+.titlebar-center .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(74,107,58,0.18); }
 .titlebar-right { display: flex; justify-content: flex-end; }
 .win-btn { width: 46px; height: 40px; display: grid; place-items: center; color: var(--fg-2); transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast); }
 .win-btn:hover { background: var(--win-btn-hover); }
@@ -127,6 +128,7 @@ input, textarea { font: inherit; color: inherit; }
 .app.sidebar-collapsed .sidebar-foot { flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; margin-top: auto; }
 .app.sidebar-collapsed .foot-btn,
 .app.sidebar-collapsed .sidebar-collapse { width: 34px; height: 34px; }
+.app.sidebar-collapsed .foot-btn { display: none; }
 
 .nav { display: flex; flex-direction: column; padding: 4px 8px 8px; gap: 1px; }
 .nav-item { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--radius-sm); color: var(--fg-2); font-size: 13px; text-align: left; transition: background var(--motion-fast), color var(--motion-fast); }
@@ -143,8 +145,13 @@ input, textarea { font: inherit; color: inherit; }
 
 .ws-group { margin-top: 10px; }
 .ws-group:first-child { margin-top: 4px; }
-.ws-header { display: flex; align-items: center; gap: 6px; padding: 6px 10px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.ws-header { display: flex; align-items: center; gap: 6px; padding: 6px 10px 4px; font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; user-select: none; transition: color var(--motion-fast), opacity var(--motion-fast); }
+.ws-header:hover { color: var(--fg-2); }
 .ws-header svg { width: 12px; height: 12px; opacity: 0.7; }
+.ws-header .ws-chev { width: 10px; height: 10px; opacity: 0.55; flex: none; transition: transform var(--motion-fast); transform: rotate(90deg); }
+.ws-group.collapsed > .ws-header { opacity: 0.65; }
+.ws-group.collapsed > .ws-header .ws-chev { transform: rotate(0deg); }
+.ws-group.collapsed > .task-row { display: none; }
 .ws-header .ws-name { flex: 1; }
 .ws-count { font-family: var(--font-mono); font-size: 10px; color: var(--meta); background: var(--panel-2); padding: 0 5px; border-radius: 4px; font-weight: 400; }
 .task-row { display: flex; align-items: flex-start; gap: 6px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--motion-fast); position: relative; }
@@ -167,7 +174,7 @@ input, textarea { font: inherit; color: inherit; }
 .foot-btn:hover { background: var(--panel-2); color: var(--fg); }
 .foot-btn svg { width: 17px; height: 17px; }
 .foot-user { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-.foot-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #b14cff, var(--accent)); display: grid; place-items: center; color: white; font-size: 11px; font-weight: 600; }
+.foot-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; color: var(--accent-on); font-size: 11px; font-weight: 500; }
 .app.sidebar-collapsed .foot-user { display: none; }
 
 .chat { display: flex; flex-direction: column; background: var(--bg); min-width: 0; min-height: 0; position: relative; }
@@ -189,62 +196,62 @@ input, textarea { font: inherit; color: inherit; }
 
 .msg { padding: 0 40px; margin-bottom: 22px; max-width: 920px; margin-left: auto; margin-right: auto; }
 .msg-user { display: flex; justify-content: flex-end; }
-.msg-user .bubble { max-width: 72%; background: var(--user-bubble); color: var(--user-bubble-fg); padding: 11px 15px; border-radius: 14px 14px 4px 14px; font-size: 14px; line-height: 1.55; box-shadow: rgba(255,255,255,0.16) 0 0.5px 0 0 inset, rgba(0,0,0,0.18) 0 0 0 0.5px inset; }
-.msg-user .bubble code { font-family: var(--font-mono); font-size: 12.5px; background: rgba(247,244,237,0.14); padding: 1px 5px; border-radius: 4px; }
+.msg-user .bubble { max-width: 72%; background: var(--user-bubble); color: var(--user-bubble-fg); padding: 11px 15px; border-radius: 14px 14px 4px 14px; font-size: 14px; line-height: 1.55; box-shadow: none; }
+.msg-user .bubble code { font-family: var(--font-mono); font-size: 12.5px; background: rgba(250,249,245,0.14); padding: 1px 5px; border-radius: 4px; }
 
 .model-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
-.model-avatar { width: 26px; height: 26px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--accent), #b14cff); display: grid; place-items: center; color: white; font-weight: 600; font-size: 12px; flex: none; }
-.model-name { font-size: 13px; font-weight: 600; color: var(--fg); }
+.model-avatar { width: 26px; height: 26px; border-radius: var(--radius-sm); background: var(--accent); display: grid; place-items: center; color: var(--accent-on); font-weight: 500; font-size: 12px; flex: none; }
+.model-name { font-size: 13px; font-weight: 500; color: var(--fg); }
 .model-role { font-size: 11px; color: var(--meta); }
 
 .md { font-size: 14.5px; line-height: 1.68; color: var(--fg-2); }
 .md > * + * { margin-top: 12px; }
-.md h1, .md h2, .md h3 { color: var(--fg); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+.md h1, .md h2, .md h3 { color: var(--fg); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
 .md h1 { font-size: 22px; margin-top: 22px; }
 .md h2 { font-size: 18px; margin-top: 18px; }
 .md h3 { font-size: 16px; margin-top: 14px; }
 .md p { color: var(--fg-2); }
-.md strong { color: var(--fg); font-weight: 600; }
-.md em { color: var(--fg); }
+.md strong { color: var(--fg); font-weight: 500; }
+.md em { color: var(--fg); font-style: normal; }
 .md a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
 .md ul, .md ol { padding-left: 22px; }
 .md li { margin-top: 5px; color: var(--fg-2); }
 .md li::marker { color: var(--meta); }
-.md blockquote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; color: var(--muted); font-style: italic; background: rgba(255,77,141,0.04); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.md blockquote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; color: var(--muted); background: #eef2f7; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .md code.inline { font-family: var(--font-mono); font-size: 12.5px; background: var(--panel-2); color: var(--fg); padding: 1.5px 6px; border-radius: 4px; border: 1px solid var(--border); }
 .md pre { background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; font-family: var(--font-mono); }
 .md pre::-webkit-scrollbar { height: 8px; }
-.md pre::-webkit-scrollbar-thumb { background: rgba(247,244,237,0.18); border-radius: 4px; }
+.md pre::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.18); border-radius: 4px; }
 .md pre code { font-family: inherit; background: none; padding: 0; color: inherit; }
 
-.tok-kw { color: #ff8fb4; font-weight: 500; }
-.tok-str { color: #b8e986; }
-.tok-num { color: #f6c177; }
-.tok-com { color: #8a8a86; font-style: italic; }
-.tok-fn { color: #92d5ff; }
-.tok-tag { color: #ff8fb4; }
-.tok-attr { color: #f6c177; }
-.ln { display: inline-block; width: 28px; margin-left: -16px; padding-right: 12px; color: rgba(247,244,237,0.32); text-align: right; user-select: none; }
+.tok-kw { color: #a9c3e0; font-weight: 500; }
+.tok-str { color: #c2cfa0; }
+.tok-num { color: #e0c489; }
+.tok-com { color: #8a8a86; }
+.tok-fn { color: #9ec0e0; }
+.tok-tag { color: #a9c3e0; }
+.tok-attr { color: #e0c489; }
+.ln { display: inline-block; width: 28px; margin-left: -16px; padding-right: 12px; color: rgba(250,249,245,0.32); text-align: right; user-select: none; }
 
 .thinking { margin: 10px 0 4px -2px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
 .thinking-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--muted); transition: background var(--motion-fast); }
 .thinking-toggle:hover { background: var(--panel-2); }
 .thinking-toggle .chev { width: 12px; height: 12px; transition: transform var(--motion-fast); color: var(--meta); }
 .thinking.open .chev { transform: rotate(90deg); }
-.thinking-toggle .think-label { font-style: italic; }
+.thinking-toggle .think-label { color: var(--muted); }
 .thinking-toggle .think-dots { color: var(--accent); letter-spacing: -1px; }
 .thinking-toggle .think-meta { margin-left: auto; font-size: 11px; font-family: var(--font-mono); color: var(--meta); }
-.thinking-body { display: none; padding: 4px 14px 14px 34px; font-size: 13px; line-height: 1.65; color: var(--muted); border-top: 1px solid var(--border); font-style: italic; }
+.thinking-body { display: none; padding: 4px 14px 14px 34px; font-size: 13px; line-height: 1.65; color: var(--muted); border-top: 1px solid var(--border); }
 .thinking-body p + p { margin-top: 8px; }
 .thinking-body code { font-family: var(--font-mono); font-size: 12px; font-style: normal; background: var(--panel-2); padding: 1px 5px; border-radius: 3px; color: var(--fg-2); }
 .thinking.open .thinking-body { display: block; }
 
 .tool { margin: 6px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
 .tool-head { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; background: var(--panel-2); border-bottom: 1px solid var(--border); cursor: pointer; }
-.tool-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; height: 20px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
-.tool-badge.read { background: rgba(92,160,255,0.14); color: #2f74c0; }
-.tool-badge.write { background: rgba(255,143,180,0.16); color: #b03365; }
-.tool-badge.command { background: rgba(247,193,77,0.18); color: #946a00; }
+.tool-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; height: 20px; border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+.tool-badge.read { background: #eef2f7; color: var(--accent); }
+.tool-badge.write { background: #d6e1ee; color: var(--accent); }
+.tool-badge.command { background: var(--surface-warm); color: var(--warn); }
 .tool-badge svg { width: 11px; height: 11px; }
 .tool-target { font-family: var(--font-mono); font-size: 12.5px; color: var(--fg); }
 .tool-target .path { color: var(--muted); }
@@ -253,11 +260,11 @@ input, textarea { font: inherit; color: inherit; }
 .tool-body { padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--fg-2); max-height: 220px; overflow-y: auto; white-space: pre; }
 .tool-body.diff-unified { padding: 0; max-height: 480px; overflow: auto; background: var(--panel); font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; }
 .diff-unified .diff-row { display: block; white-space: pre; padding-right: 14px; }
-.diff-unified .diff-row .sign { display: inline-block; width: 24px; text-align: center; user-select: none; font-weight: 600; }
-.diff-unified .diff-row.del { background: rgba(220,38,38,0.10); color: #991919; }
-.diff-unified .diff-row.del .sign { color: #c0392b; background: rgba(220,38,38,0.16); }
-.diff-unified .diff-row.add { background: rgba(22,163,74,0.10); color: #1a6b34; }
-.diff-unified .diff-row.add .sign { color: #16a34a; background: rgba(22,163,74,0.18); }
+.diff-unified .diff-row .sign { display: inline-block; width: 24px; text-align: center; user-select: none; font-weight: 500; }
+.diff-unified .diff-row.del { background: #f0e3df; color: #8a3a30; }
+.diff-unified .diff-row.del .sign { color: #8a3a30; background: #e6d2cd; }
+.diff-unified .diff-row.add { background: #eef0e6; color: #4a6b3a; }
+.diff-unified .diff-row.add .sign { color: #4a6b3a; background: #e0e8d8; }
 .diff-unified .diff-row.ctx { color: var(--fg-2); }
 .diff-unified .diff-row.ctx .sign { color: transparent; }
 .tool-head .tool-status svg.chev-btn { transition: transform var(--motion-fast) var(--ease-standard); }
@@ -266,11 +273,32 @@ input, textarea { font: inherit; color: inherit; }
 .tool-body::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.12); border-radius: 4px; }
 .tool-collapsed .tool-body { display: none; }
 .tool-collapsed .tool-head { border-bottom: none; }
+.tool.fv-tool { cursor: pointer; transition: border-color var(--motion-fast), background var(--motion-fast); }
+.tool.fv-tool:hover { border-color: var(--accent); }
+.tool.fv-tool:hover .tool-head { background: var(--surface); }
+.tool-status .fv-open-ico { color: var(--meta); transition: color var(--motion-fast), transform var(--motion-fast); flex: none; }
+.fv-tool:hover .tool-status .fv-open-ico { color: var(--accent); transform: translate(1px,-1px); }
+.tool-status .fv-open-ico.rt { display: none; }
 
-.composer-wrap { padding: 4px 24px 16px; background: linear-gradient(to top, var(--bg) 60%, rgba(247,244,237,0)); }
-.composer { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--elev-raised); overflow: hidden; }
+.composer-wrap { padding: 4px 24px 16px; background: linear-gradient(to top, var(--bg) 60%, rgba(250,249,245,0)); position: relative; z-index: 20; }
+.composer { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--elev-raised); overflow: visible; }
 .composer-textarea { width: 100%; border: none; outline: none; background: none; resize: none; padding: 14px 16px 4px; font-family: var(--font-body); font-size: 14px; line-height: 1.55; color: var(--fg); min-height: 28px; max-height: 180px; }
 .composer-textarea::placeholder { color: var(--meta); }
+
+.attach-preview { display: none; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 12px 0; }
+.attach-preview.has-files { display: flex; }
+.attach-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 240px; height: 28px; padding: 0 3px 0 9px; background: var(--panel-2); border-radius: var(--radius-sm); font-size: 12px; color: var(--fg-2); }
+.attach-chip > svg { width: 13px; height: 13px; opacity: 0.7; flex: none; }
+.attach-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; }
+.attach-chip .remove { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 4px; color: var(--meta); cursor: pointer; transition: background var(--motion-fast), color var(--motion-fast); }
+.attach-chip .remove:hover { background: var(--border); color: var(--fg); }
+.attach-chip .remove svg { width: 11px; height: 11px; opacity: 0.9; }
+.attach-thumb { position: relative; width: 52px; height: 52px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: var(--panel-2); flex: none; }
+.attach-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.attach-thumb .remove { position: absolute; top: 3px; right: 3px; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: rgba(20,20,19,0.72); color: #faf9f5; cursor: pointer; transition: background var(--motion-fast); }
+.attach-thumb .remove:hover { background: rgba(20,20,19,0.92); }
+.attach-thumb .remove svg { width: 9px; height: 9px; }
+
 .composer-bar { display: flex; align-items: center; gap: 4px; padding: 6px 8px 8px; }
 .cbtn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: var(--radius-sm); color: var(--fg-2); font-size: 12.5px; transition: background var(--motion-fast), color var(--motion-fast); position: relative; }
 .cbtn:hover { background: var(--panel-2); }
@@ -278,20 +306,18 @@ input, textarea { font: inherit; color: inherit; }
 .cbtn .chev { width: 11px; height: 11px; opacity: 0.6; transition: transform var(--motion-fast); }
 .cbtn[aria-expanded="true"] .chev { transform: rotate(180deg); }
 .cbtn.mono { font-family: var(--font-mono); font-size: 12px; }
-.cbtn.mode-toggle { border: 1px solid var(--border); background: var(--bg); }
-.cbtn.mode-toggle .mode-pill { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 4px; background: var(--fg); color: var(--user-bubble-fg); font-size: 11px; font-weight: 600; font-family: var(--font-mono); }
 
 .ctx-ring { position: relative; width: 28px; height: 28px; }
 .ctx-ring svg { width: 28px; height: 28px; transform: rotate(-90deg); }
 .ctx-ring .track { fill: none; stroke: var(--border); stroke-width: 3; }
 .ctx-ring .fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
-.ctx-ring .ctx-label { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 9px; font-weight: 600; color: var(--fg); }
+.ctx-ring .ctx-label { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 9px; font-weight: 500; color: var(--fg); }
 .cbtn.ctx-btn { padding: 0 8px; }
 .cbtn.ctx-btn:hover .ctx-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
 .ctx-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--user-bubble-fg); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--motion-fast), transform var(--motion-fast); font-family: var(--font-mono); }
 .ctx-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--fg); }
 
-.send-btn { width: 32px; height: 32px; display: grid; place-items: center; background: var(--fg); color: var(--user-bubble-fg); border-radius: var(--radius-sm); box-shadow: rgba(255,255,255,0.2) 0 0.5px 0 0 inset, rgba(0,0,0,0.2) 0 0 0 0.5px inset, rgba(0,0,0,0.05) 0 1px 2px 0; transition: opacity var(--motion-fast), transform var(--motion-fast); }
+.send-btn { width: 32px; height: 32px; display: grid; place-items: center; background: var(--accent); color: var(--accent-on); border-radius: var(--radius-sm); box-shadow: none; transition: opacity var(--motion-fast), transform var(--motion-fast); }
 .send-btn:hover { opacity: 0.9; }
 .send-btn:active { transform: scale(0.96); }
 .send-btn svg { width: 15px; height: 15px; }
@@ -299,10 +325,11 @@ input, textarea { font: inherit; color: inherit; }
 .composer-bar .right { display: flex; align-items: center; gap: 4px; }
 .divider-v { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
 
-.menu { position: absolute; bottom: calc(100% + 6px); left: 0; min-width: 220px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(28,28,28,0.02); padding: 6px; z-index: 50; display: none; font-size: 13px; }
+.menu { position: absolute; bottom: calc(100% + 6px); left: 0; min-width: 220px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md);   box-shadow: var(--elev-raised); padding: 6px; z-index: 50; display: none; font-size: 13px; }
+.menu.compact { min-width: 0; width: max-content; }
 .menu.open { display: block; animation: menuIn var(--motion-fast) var(--ease-standard); }
 @keyframes menuIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-.menu-section-label { padding: 6px 10px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--meta); letter-spacing: 0.06em; }
+.menu-section-label { padding: 6px 10px 4px; font-size: 10px; font-weight: 500; text-transform: uppercase; color: var(--meta); letter-spacing: 0.06em; }
 .menu-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--motion-fast); }
 .menu-item:hover { background: var(--panel-2); }
 .menu-item.active { background: var(--panel-2); }
@@ -314,6 +341,18 @@ input, textarea { font: inherit; color: inherit; }
 .menu-item .mi-tag { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--panel-2); color: var(--meta); }
 .menu-item .mi-check { width: 14px; height: 14px; color: var(--accent); flex: none; opacity: 0; }
 .menu-item.active .mi-check { opacity: 1; }
+
+/* App menu — top-left, anchored under .brand-mark */
+.brand-mark-wrap { position: relative; display: flex; align-items: center; }
+.brand-mark { cursor: pointer; border: none; padding: 0; }
+.brand-mark svg { width: 13px; height: 13px; }
+.brand-mark:hover,
+.brand-mark[aria-expanded="true"] { background: var(--accent-active); }
+.brand-mark:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.app-menu { top: calc(100% + 6px); left: 0; bottom: auto; min-width: 224px; }
+.app-menu .menu-divider { height: 1px; background: var(--border-soft); margin: 4px 6px; }
+.app-menu .menu-item.danger .mi-title,
+.app-menu .menu-item.danger .mi-icon { color: var(--danger); }
 
 .status { background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
 .status-tabs { display: flex; align-items: center; gap: 2px; padding: 8px 10px 0; border-bottom: 1px solid var(--border); }
@@ -330,17 +369,17 @@ input, textarea { font: inherit; color: inherit; }
 
 .s-block { padding: 14px 14px; border-bottom: 1px solid var(--border); }
 .s-block:last-child { border-bottom: none; }
-.s-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.s-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .s-head svg { width: 13px; height: 13px; opacity: 0.7; }
 .s-head .count { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--meta); font-weight: 400; background: var(--panel-2); padding: 1px 6px; border-radius: 4px; letter-spacing: 0; }
 .s-head .act { font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--accent); cursor: pointer; }
 
 .change-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--radius-sm); font-size: 12px; transition: background var(--motion-fast); cursor: pointer; }
 .change-row:hover { background: var(--panel-2); }
-.change-status { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; flex: none; }
-.change-status.M { background: rgba(247,193,77,0.18); color: #946a00; }
-.change-status.A { background: rgba(22,163,74,0.16); color: #1a6b34; }
-.change-status.D { background: rgba(220,38,38,0.14); color: #991919; }
+.change-status { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 500; flex: none; }
+.change-status.M { background: #efe8d8; color: var(--warn); }
+.change-status.A { background: #e8ede0; color: var(--success); }
+.change-status.D { background: #efddd9; color: var(--danger); }
 .change-path { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .change-path .dir { color: var(--meta); }
 .change-stage { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px; display: grid; place-items: center; flex: none; transition: all var(--motion-fast); }
@@ -351,19 +390,19 @@ input, textarea { font: inherit; color: inherit; }
 .commit-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; color: var(--fg); resize: none; min-height: 36px; outline: none; font-family: var(--font-body); }
 .commit-input:focus { box-shadow: var(--focus-ring); border-color: transparent; }
 .commit-actions { display: flex; gap: 6px; }
-.commit-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 30px; padding: 0 12px; background: var(--fg); color: var(--user-bubble-fg); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; box-shadow: rgba(255,255,255,0.2) 0 0.5px 0 0 inset, rgba(0,0,0,0.2) 0 0 0 0.5px inset; transition: opacity var(--motion-fast); }
+.commit-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 30px; padding: 0 12px; background: var(--accent); color: var(--accent-on); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; box-shadow: none; transition: opacity var(--motion-fast); }
 .commit-btn:hover { opacity: 0.9; }
 .commit-btn.ghost { background: transparent; color: var(--fg-2); border: 1px solid var(--border); box-shadow: none; }
 .commit-btn svg { width: 13px; height: 13px; }
 
 .ai-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
 .ai-cell { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
-.ai-cell .v { font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--fg); line-height: 1.1; }
+.ai-cell .v { font-family: var(--font-mono); font-size: 18px; font-weight: 500; color: var(--fg); line-height: 1.1; }
 .ai-cell .l { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
 .mcp-list { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
 .mcp-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: var(--radius-sm); font-size: 12px; }
 .mcp-row:hover { background: var(--bg); }
-.mcp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px rgba(22,163,74,0.18); flex: none; }
+.mcp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px rgba(74,107,58,0.18); flex: none; }
 .mcp-name { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); flex: 1; }
 .mcp-tools { font-family: var(--font-mono); font-size: 10px; color: var(--meta); }
 
@@ -387,13 +426,268 @@ input, textarea { font: inherit; color: inherit; }
 
 @media (max-width: 1180px) { :root { --status-w: 280px; } .msg { padding: 0 24px; } }
 @media (max-width: 980px) { :root { --sidebar-w: 220px; --status-w: 260px; } .msg { padding: 0 18px; } }
+
+/* ── Dark theme (data-theme="dark" on <html>) ───────────────────── */
+[data-theme="dark"] {
+  --bg: #141413;
+  --surface: #1f1f1d;
+  --surface-warm: #2a2926;
+  --panel: #1f1f1d;
+  --panel-2: #2a2926;
+  --fg: #faf9f5;
+  --fg-2: #d4d3cd;
+  --muted: #a09e96;
+  --meta: #838279;
+  --border: #403f3a;
+  --border-soft: #343330;
+  --accent: #5b8ec0;
+  --accent-on: #141413;
+  --accent-light: #7da6d0;
+  --accent-hover: var(--accent);
+  --accent-active: #4a7ab0;
+  --success: #6f9a5a;
+  --warn: #c69b3a;
+  --danger: #c2594c;
+  --code-bg: #0a0a09;
+  --code-fg: #faf9f5;
+  --user-bubble: #2e2d2a;
+  --user-bubble-fg: #faf9f5;
+  --win-btn-hover: rgba(250,249,245,0.07);
+  --win-close-hover: #8a3a30;
+  --win-close-fg: #faf9f5;
+  --elev-raised: 0 4px 24px rgba(0,0,0,0.28);
+}
+[data-theme="dark"] ::selection { background: rgba(91,142,192,0.32); }
+[data-theme="dark"] .history::-webkit-scrollbar-thumb,
+[data-theme="dark"] .chat-stream::-webkit-scrollbar-thumb,
+[data-theme="dark"] .status-scroll::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.10); }
+[data-theme="dark"] .history::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] .chat-stream::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] .status-scroll::-webkit-scrollbar-thumb:hover { background: rgba(250,249,245,0.20); }
+[data-theme="dark"] .tool-body::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.12); }
+[data-theme="dark"] .md blockquote { background: #1c2738; }
+[data-theme="dark"] .tool-badge.read { background: #1c2a3d; }
+[data-theme="dark"] .tool-badge.write { background: #1f3252; }
+[data-theme="dark"] .tool-badge.command { background: #3a3220; color: var(--warn); }
+[data-theme="dark"] .diff-unified .diff-row.del { background: #2f231f; color: #d9786e; }
+[data-theme="dark"] .diff-unified .diff-row.del .sign { color: #d9786e; background: #3d2a25; }
+[data-theme="dark"] .diff-unified .diff-row.add { background: #1f2a1c; color: #8fb878; }
+[data-theme="dark"] .diff-unified .diff-row.add .sign { color: #8fb878; background: #2c3a27; }
+[data-theme="dark"] .change-status.M { background: #3a3220; color: var(--warn); }
+[data-theme="dark"] .change-status.A { background: #222a1c; color: var(--success); }
+[data-theme="dark"] .change-status.D { background: #332420; color: var(--danger); }
+[data-theme="dark"] .ctx-tip { color: var(--bg); }
+#appMenuThemeIcon .ic-sun, #footThemeBtn .ic-sun { display: none; }
+[data-theme="dark"] #appMenuThemeIcon .ic-moon, [data-theme="dark"] #footThemeBtn .ic-moon { display: none; }
+[data-theme="dark"] #appMenuThemeIcon .ic-sun, [data-theme="dark"] #footThemeBtn .ic-sun { display: block; }
+
+/* ── Settings modal ─────────────────────────────────────────────── */
+.settings-overlay { position: fixed; inset: 0; background: rgba(20,20,19,0.42); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px; }
+.settings-overlay.open { display: flex; animation: overlayIn var(--motion-base) var(--ease-standard); }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+.settings-dialog { width: min(920px, 100%); height: min(640px, 100%); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 12px 48px rgba(0,0,0,0.18); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; animation: dialogIn var(--motion-base) var(--ease-standard); }
+@keyframes dialogIn { from { opacity: 0; transform: translateY(8px) scale(0.99); } to { opacity: 1; transform: none; } }
+.settings-header { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); }
+.settings-header h2 { font-family: var(--font-display); font-size: 15px; font-weight: 500; color: var(--fg); }
+.settings-header .sh-sub { font-size: 11px; color: var(--meta); }
+.settings-close { margin-left: auto; width: 28px; height: 28px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--muted); transition: background var(--motion-fast), color var(--motion-fast); }
+.settings-close:hover { background: var(--panel-2); color: var(--fg); }
+.settings-close svg { width: 14px; height: 14px; }
+
+.settings-body { display: grid; grid-template-columns: 196px 1fr; min-height: 0; overflow: hidden; }
+.settings-nav { background: var(--bg); border-right: 1px solid var(--border); padding: 10px 8px; overflow-y: auto; }
+.settings-nav-label { padding: 8px 10px 4px; font-size: 10px; font-weight: 500; text-transform: uppercase; color: var(--meta); letter-spacing: 0.06em; }
+.settings-nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 13px; color: var(--fg-2); cursor: pointer; transition: background var(--motion-fast), color var(--motion-fast); }
+.settings-nav-item:hover { background: var(--panel-2); color: var(--fg); }
+.settings-nav-item.active { background: var(--panel-2); color: var(--accent); }
+.settings-nav-item svg { width: 14px; height: 14px; opacity: 0.8; flex: none; }
+
+.settings-content { overflow-y: auto; padding: 20px 24px; }
+.settings-content::-webkit-scrollbar { width: 8px; }
+.settings-content::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.1); border-radius: 4px; border: 2px solid var(--panel); }
+.settings-panel { display: none; }
+.settings-panel.active { display: block; animation: panelIn var(--motion-fast) var(--ease-standard); }
+@keyframes panelIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.settings-section { margin-bottom: 24px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.settings-section-num { font-family: var(--font-display); font-size: 12px; color: var(--accent); letter-spacing: 0.4px; font-variant-numeric: tabular-nums; }
+.settings-section-title { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--fg); }
+.settings-section-desc { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; }
+
+.field { margin-bottom: 12px; }
+.field:last-child { margin-bottom: 0; }
+.field-label { display: block; font-size: 11px; font-weight: 500; color: var(--fg-2); margin-bottom: 4px; letter-spacing: 0.02em; }
+.field-label .hint { font-weight: 400; color: var(--meta); font-size: 10.5px; margin-left: 6px; }
+.field-input, .field-select, .field-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 10px; font-size: 12.5px; color: var(--fg); outline: none; font-family: var(--font-body); transition: box-shadow var(--motion-fast), border-color var(--motion-fast); }
+.field-input.mono, .field-textarea.mono { font-family: var(--font-mono); font-size: 11.5px; }
+.field-input:focus, .field-select:focus, .field-textarea:focus { box-shadow: var(--focus-ring); border-color: transparent; }
+.field-textarea { resize: vertical; min-height: 56px; line-height: 1.5; }
+.field-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' fill='none' stroke='%236b6a64' stroke-width='1.2' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 9px center; padding-right: 26px; cursor: pointer; }
+.field-row { display: grid; gap: 10px; }
+.field-row.c2 { grid-template-columns: 1fr 1fr; }
+.field-row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.field-secret { position: relative; }
+.field-secret .field-input { padding-right: 32px; }
+.field-secret .reveal { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; display: grid; place-items: center; border-radius: 4px; color: var(--meta); cursor: pointer; }
+.field-secret .reveal:hover { color: var(--fg); background: var(--panel-2); }
+.field-secret .reveal svg { width: 13px; height: 13px; }
+
+.field-range { display: flex; align-items: center; gap: 10px; }
+.field-range input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--panel-2); border-radius: 2px; outline: none; }
+.field-range input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--panel); }
+.field-range input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--panel); }
+.field-range .range-val { font-family: var(--font-mono); font-size: 11px; color: var(--accent); width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.entry-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.entry-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; transition: opacity var(--motion-fast); }
+.entry-card:has(.entry-toggle:not(.on)) { opacity: 0.5; }
+.entry-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.entry-card-head .ec-title { font-size: 12.5px; font-weight: 500; color: var(--fg); flex: 1; min-width: 0; }
+.entry-card-head .ec-status { font-family: var(--font-mono); font-size: 10px; color: var(--success); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+.entry-card-head .ec-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+.entry-card-head .ec-status.off { color: var(--meta); }
+.entry-card-head .ec-status.off .dot { background: var(--meta); }
+.entry-toggle { position: relative; width: 30px; height: 17px; background: var(--panel-2); border-radius: 999px; cursor: pointer; transition: background var(--motion-fast); flex: none; }
+.entry-toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--panel); transition: transform var(--motion-fast); }
+.entry-toggle.on { background: var(--accent); }
+.entry-toggle.on::after { transform: translateX(13px); background: var(--accent-on); }
+.entry-remove { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 4px; color: var(--meta); cursor: pointer; transition: color var(--motion-fast), background var(--motion-fast); flex: none; }
+.entry-remove:hover { color: var(--danger); background: var(--panel-2); }
+.entry-remove svg { width: 13px; height: 13px; }
+.entry-fields { display: grid; gap: 10px; }
+
+.type-tag { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.04em; text-transform: uppercase; flex: none; }
+.type-tag.primary, .type-tag.stdio { background: #e4ecf5; color: var(--accent); }
+.type-tag.subagent, .type-tag.remote { background: var(--panel-2); color: var(--fg-2); }
+
+.add-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 32px; border: 1px dashed var(--border); border-radius: var(--radius-md); color: var(--muted); font-size: 12px; cursor: pointer; transition: all var(--motion-fast); background: transparent; }
+.add-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--surface); }
+.add-btn svg { width: 13px; height: 13px; }
+
+.mcp-suggest-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mcp-suggest-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.mcp-suggest-item .ms-info { flex: 1; min-width: 0; }
+.mcp-suggest-item .ms-name { font-size: 12px; font-weight: 500; color: var(--fg); font-family: var(--font-mono); }
+.mcp-suggest-item .ms-desc { font-size: 10.5px; color: var(--meta); margin-top: 1px; }
+.mcp-suggest-item .ms-add { width: 26px; height: 26px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--accent); cursor: pointer; flex: none; transition: background var(--motion-fast); }
+.mcp-suggest-item .ms-add:hover { background: var(--panel-2); }
+.mcp-suggest-item .ms-add svg { width: 14px; height: 14px; }
+.mcp-suggest-item.added .ms-add { color: var(--success); pointer-events: none; }
+
+.settings-footer { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg); }
+.settings-footer .save-status { font-size: 11px; color: var(--meta); margin-right: auto; transition: color var(--motion-fast); }
+.s-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; transition: opacity var(--motion-fast), background var(--motion-fast); cursor: pointer; }
+.s-btn.primary { background: var(--accent); color: var(--accent-on); }
+.s-btn.primary:hover { background: var(--accent-active); }
+.s-btn.ghost { background: transparent; color: var(--fg-2); border: 1px solid var(--border); }
+.s-btn.ghost:hover { background: var(--panel-2); }
+.s-btn svg { width: 13px; height: 13px; }
+
+[data-theme="dark"] .settings-overlay { background: rgba(0,0,0,0.6); }
+[data-theme="dark"] .field-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' fill='none' stroke='%23838279' stroke-width='1.2' stroke-linecap='round'/></svg>"); }
+[data-theme="dark"] .settings-content::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.1); border-color: var(--panel); }
+[data-theme="dark"] .type-tag.primary, [data-theme="dark"] .type-tag.stdio { background: #1c2a3d; }
+[data-theme="dark"] .settings-dialog { box-shadow: 0 16px 56px rgba(0,0,0,0.5); }
+
+/* ── File viewer modal ─────────────────────────────────────────── */
+.fv-overlay { position: fixed; inset: 0; background: rgba(20,20,19,0.46); z-index: 210; display: none; align-items: center; justify-content: center; padding: 28px; }
+.fv-overlay.open { display: flex; animation: overlayIn var(--motion-base) var(--ease-standard); }
+.fv-dialog { width: min(1040px, 100%); height: min(720px, 100%); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 16px 56px rgba(0,0,0,0.22); display: grid; grid-template-rows: auto auto 1fr auto; overflow: hidden; animation: dialogIn var(--motion-base) var(--ease-standard); }
+.fv-header { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); min-width: 0; }
+.fv-file-icon { width: 18px; height: 18px; color: var(--accent); flex: none; }
+.fv-path { font-family: var(--font-mono); font-size: 12.5px; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.fv-path .fv-pathdir { color: var(--meta); }
+.fv-langtag { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.04em; text-transform: uppercase; background: #e4ecf5; color: var(--accent); flex: none; }
+.fv-spacer { flex: 1; min-width: 0; }
+.fv-icon-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--muted); cursor: pointer; transition: background var(--motion-fast), color var(--motion-fast); flex: none; position: relative; }
+.fv-icon-btn:hover { background: var(--panel-2); color: var(--fg); }
+.fv-icon-btn svg { width: 15px; height: 15px; }
+
+.fv-toolbar { display: flex; align-items: center; gap: 4px; padding: 7px 12px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.fv-tabs { display: inline-flex; background: var(--panel-2); border-radius: var(--radius-sm); padding: 2px; gap: 2px; }
+.fv-tab { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: var(--muted); cursor: pointer; transition: background var(--motion-fast), color var(--motion-fast); }
+.fv-tab svg { width: 13px; height: 13px; }
+.fv-tab:hover { color: var(--fg); }
+.fv-tab.active { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.fv-tab .fv-tab-badge { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 3px; background: rgba(0,0,0,0.06); color: var(--fg-2); }
+.fv-tab.active .fv-tab-badge { background: var(--accent); color: var(--accent-on); }
+.fv-tb-meta { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--meta); display: flex; align-items: center; gap: 12px; }
+
+.fv-body { min-height: 0; overflow: hidden; background: var(--code-bg); position: relative; }
+.fv-scroller { height: 100%; overflow: auto; }
+.fv-scroller::-webkit-scrollbar { width: 11px; height: 11px; }
+.fv-scroller::-webkit-scrollbar-track { background: transparent; }
+.fv-scroller::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.14); border-radius: 6px; border: 3px solid var(--code-bg); }
+.fv-scroller::-webkit-scrollbar-thumb:hover { background: rgba(250,249,245,0.26); }
+.fv-scroller::-webkit-scrollbar-corner { background: transparent; }
+
+.fv-code { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65; color: var(--code-fg); padding: 14px 0; min-width: max-content; }
+.fv-code .fv-cl { display: block; white-space: pre; padding-right: 24px; }
+.fv-code .fv-cl:hover { background: rgba(250,249,245,0.04); }
+.fv-gutter { display: inline-block; width: 54px; padding-right: 16px; margin-left: 16px; text-align: right; color: rgba(250,249,245,0.30); user-select: none; }
+
+.fv-diff { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; padding: 8px 0; min-width: max-content; color: var(--code-fg); }
+.fv-diff .fv-hunk { display: block; color: rgba(250,249,245,0.46); background: rgba(96,140,200,0.12); padding: 3px 24px 3px 16px; white-space: pre; }
+.fv-diff .fv-drow { display: block; white-space: pre; padding-right: 24px; }
+.fv-gut-old, .fv-gut-new { display: inline-block; width: 42px; padding-left: 8px; padding-right: 10px; text-align: right; user-select: none; color: rgba(250,249,245,0.26); }
+.fv-sign { display: inline-block; width: 16px; text-align: center; user-select: none; }
+.fv-diff .fv-drow.del { background: rgba(138,58,48,0.20); }
+.fv-diff .fv-drow.del .fv-sign, .fv-diff .fv-drow.del .fv-text { color: #e6a39a; }
+.fv-diff .fv-drow.del .fv-gut-old { color: rgba(230,163,154,0.5); }
+.fv-diff .fv-drow.add { background: rgba(74,107,58,0.20); }
+.fv-diff .fv-drow.add .fv-sign, .fv-diff .fv-drow.add .fv-text { color: #b8d49e; }
+.fv-diff .fv-drow.add .fv-gut-new { color: rgba(184,212,158,0.5); }
+.fv-diff .fv-drow.ctx .fv-text { color: rgba(250,249,245,0.80); }
+.fv-diff .fv-drow.ctx .fv-sign { color: transparent; }
+
+.fv-footer { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px; border-top: 1px solid var(--border); background: var(--bg); font-size: 11.5px; color: var(--meta); font-family: var(--font-mono); }
+.fv-footer .fv-stat { display: inline-flex; align-items: center; gap: 5px; }
+.fv-footer .fv-stat .fv-stat-v { color: var(--fg-2); }
+.fv-footer .fv-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex: none; }
+.fv-footer .fv-plusminus { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; }
+.fv-footer .fv-plusminus .p { color: #4a6b3a; }
+.fv-footer .fv-plusminus .m { color: #8a3a30; }
+
+.fv-toast { position: absolute; top: 12px; right: 12px; background: var(--accent); color: var(--accent-on); font-size: 11.5px; font-weight: 500; padding: 6px 12px; border-radius: var(--radius-sm); box-shadow: var(--elev-raised); opacity: 0; transform: translateY(-4px); transition: opacity var(--motion-fast), transform var(--motion-fast); pointer-events: none; z-index: 5; }
+.fv-toast.show { opacity: 1; transform: none; }
+
+[data-theme="dark"] .fv-overlay { background: rgba(0,0,0,0.64); }
+[data-theme="dark"] .fv-dialog { box-shadow: 0 20px 64px rgba(0,0,0,0.55); }
+[data-theme="dark"] .fv-langtag { background: #1c2a3d; }
+[data-theme="dark"] .fv-tab .fv-tab-badge { background: rgba(250,249,245,0.08); color: var(--muted); }
+@media (max-width: 720px) { .settings-body { grid-template-columns: 1fr; } .settings-nav { display: none; } .mcp-suggest-list { grid-template-columns: 1fr; } .field-row.c2, .field-row.c3 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <header class="titlebar">
     <div class="titlebar-left">
-      <div class="brand-mark">A</div>
+      <div class="brand-mark-wrap">
+        <button class="brand-mark" id="appMenuBtn" aria-expanded="false" aria-haspopup="true" aria-label="应用菜单" title="应用菜单" onclick="event.stopPropagation(); toggleMenu('appMenu', this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h10"/></svg>
+        </button>
+        <div class="app-menu menu" id="appMenu" role="menu">
+          <div class="menu-section-label">应用</div>
+          <div class="menu-item" role="menuitem" onclick="event.stopPropagation(); appMenuAction('settings')">
+            <span class="mi-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2"/><path d="M8 1.4l.7 1.6a4.6 4.6 0 0 1 1.4.4l1.6-.8 1.1 1.1-.8 1.6c.2.4.3.9.4 1.4l1.6.7v1.5l-1.6.7c-.1.5-.2 1-.4 1.4l.8 1.6-1.1 1.1-1.6-.8c-.4.2-.9.3-1.4.4L8 14.6 6.5 14l-.7-1.6a4.6 4.6 0 0 1-1.4-.4l-1.6.8-1.1-1.1.8-1.6c-.2-.4-.3-.9-.4-1.4L1.4 8.7V7.2l1.6-.7c.1-.5.2-1 .4-1.4l-.8-1.6 1.1-1.1 1.6.8c.4-.2.9-.3 1.4-.4z"/></svg></span>
+            <span class="mi-main"><span class="mi-title">设置</span></span>
+            <span class="mi-tag">⌘,</span>
+          </div>
+          <div class="menu-item" role="menuitem" onclick="event.stopPropagation(); appMenuAction('theme')">
+            <span class="mi-icon" id="appMenuThemeIcon"><svg class="ic-moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M14 9.2A5.8 5.8 0 0 1 6.8 2 5.8 5.8 0 1 0 14 9.2z"/></svg><svg class="ic-sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.8M8 12.7v1.8M14.5 8h-1.8M3.3 8H1.5M12.6 3.4l-1.3 1.3M4.7 11.3l-1.3 1.3M12.6 12.6l-1.3-1.3M4.7 4.7L3.4 3.4"/></svg></span>
+            <span class="mi-main"><span class="mi-title">切换主题</span></span>
+          </div>
+          <div class="menu-divider"></div>
+          <div class="menu-item danger" role="menuitem" onclick="event.stopPropagation(); appMenuAction('exit')">
+            <span class="mi-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 2.5H4A1 1 0 0 0 3 3.5v9a1 1 0 0 0 1 1h2.5"/><path d="M9.5 8H15M12.2 5.3 15 8l-2.8 2.7"/></svg></span>
+            <span class="mi-main"><span class="mi-title">退出 Athena</span></span>
+            <span class="mi-tag">⌘Q</span>
+          </div>
+        </div>
+      </div>
       <div>
         <span class="brand-name">Athena</span>
         <span class="brand-sub">your powerful AI assistant</span>
@@ -431,9 +725,10 @@ input, textarea { font: inherit; color: inherit; }
       <div class="history" id="history">
         <div class="ws-group">
           <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
             <span class="ws-name">athena-web</span>
-            <span class="ws-count">4</span>
+            <span class="ws-count">6</span>
           </div>
           <div class="task-row active">
             <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
@@ -463,13 +758,28 @@ input, textarea { font: inherit; color: inherit; }
             </div>
             <span class="task-time">昨天</span>
           </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">抽离通用 Modal 组件</div>
+            </div>
+            <span class="task-time">2天</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">优化首屏加载性能</div>
+            </div>
+            <span class="task-time">3天</span>
+          </div>
         </div>
 
         <div class="ws-group">
           <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
             <span class="ws-name">my-blog</span>
-            <span class="ws-count">2</span>
+            <span class="ws-count">4</span>
           </div>
           <div class="task-row">
             <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
@@ -485,12 +795,175 @@ input, textarea { font: inherit; color: inherit; }
             </div>
             <span class="task-time">5月28日</span>
           </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">添加文章目录自动生成</div>
+            </div>
+            <span class="task-time">5月24日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">升级到 Tailwind v4</div>
+            </div>
+            <span class="task-time">5月20日</span>
+          </div>
+        </div>
+
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">design-system</span>
+            <span class="ws-count">5</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">建立设计令牌体系</div>
+            </div>
+            <span class="task-time">5月22日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">编写 Button 组件文档</div>
+            </div>
+            <span class="task-time">5月18日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">梳理颜色语义层级</div>
+            </div>
+            <span class="task-time">5月15日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">导出 Figma 变量</div>
+            </div>
+            <span class="task-time">5月12日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">制定组件命名规范</div>
+            </div>
+            <span class="task-time">5月9日</span>
+          </div>
+        </div>
+
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">athena-mobile</span>
+            <span class="ws-count">4</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">适配 iOS 安全区</div>
+            </div>
+            <span class="task-time">5月10日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">实现下拉刷新交互</div>
+            </div>
+            <span class="task-time">5月8日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">修复 Android 状态栏遮挡</div>
+            </div>
+            <span class="task-time">5月5日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">接入推送通知</div>
+            </div>
+            <span class="task-time">5月2日</span>
+          </div>
+        </div>
+
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">data-viz</span>
+            <span class="ws-count">4</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">重构折线图渲染层</div>
+            </div>
+            <span class="task-time">4月30日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">支持大数据量虚拟滚动</div>
+            </div>
+            <span class="task-time">4月26日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">添加图例交互高亮</div>
+            </div>
+            <span class="task-time">4月22日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">优化 SVG 导出清晰度</div>
+            </div>
+            <span class="task-time">4月18日</span>
+          </div>
+        </div>
+
+        <div class="ws-group">
+          <div class="ws-header">
+            <svg class="ws-chev" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6L4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 12 12"><path d="M1 3a1 1 0 011-1h2.5l1 1H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+            <span class="ws-name">legacy-refactor</span>
+            <span class="ws-count">3</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">移除已废弃的 jQuery 依赖</div>
+            </div>
+            <span class="task-time">4月28日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">合并重复的工具函数</div>
+            </div>
+            <span class="task-time">4月25日</span>
+          </div>
+          <div class="task-row">
+            <button class="task-pin" title="置顶" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.2v3.8"/><path class="pin-body" d="M4.6 10.2h6.8l-1-2.3V4.6a2 2 0 0 0-2-2h-0.8a2 2 0 0 0-2 2v3.3z"/></svg></button>
+            <div class="task-main">
+              <div class="task-title">拆分巨型 utils.ts</div>
+            </div>
+            <span class="task-time">4月20日</span>
+          </div>
         </div>
       </div>
 
       <div class="sidebar-foot">
-        <button class="foot-btn" title="设置">
-          <svg viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8.5 1.5v2M8.5 13.5v2M14.5 3.9l-1.4 1.4M4 14.5l-1.4 1.4M1.5 8.5h2M13.5 8.5h2M14.5 13.1l-1.4-1.4M4 2.5L2.6 1.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <button class="foot-btn" title="切换主题" onclick="toggleTheme()" id="footThemeBtn">
+          <svg class="ic-moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M14 9.2A5.8 5.8 0 0 1 6.8 2 5.8 5.8 0 1 0 14 9.2z"/></svg>
+          <svg class="ic-sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.8M8 12.7v1.8M14.5 8h-1.8M3.3 8H1.5M12.6 3.4l-1.3 1.3M4.7 11.3l-1.3 1.3M12.6 12.6l-1.3-1.3M4.7 4.7L3.4 3.4"/></svg>
         </button>
         <div class="foot-user">
           <div class="foot-avatar">林</div>
@@ -551,20 +1024,12 @@ input, textarea { font: inherit; color: inherit; }
             </div>
           </div>
 
-          <div class="tool tool-collapsed">
-            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+          <div class="tool fv-tool" onclick="openFileViewer('card-read')">
+            <div class="tool-head">
               <span class="tool-badge read"><svg viewBox="0 0 12 12"><path d="M1.5 2.5a1 1 0 011-1h3l1 1h3a1 1 0 011 1v6a1 1 0 01-1 1H2.5a1 1 0 01-1-1v-7z" fill="none" stroke="currentColor" stroke-width="1"/></svg>read</span>
               <span class="tool-target"><span class="path">src/components/</span>Card.tsx</span>
-              <span class="tool-status"><span class="ok">✓ 42 行</span><svg width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+              <span class="tool-status"><span class="ok">✓ 42 行</span><svg class="fv-open-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5H3a.5.5 0 00-.5.5V9a.5.5 0 00.5.5h6a.5.5 0 00.5-.5V7.5"/><path d="M7 2.5h2.5V5"/><path d="M5.5 6.5L9.5 2.5"/></svg></span>
             </div>
-            <div class="tool-body"><span style="color:var(--meta);">1</span>  <span class="tok-kw">import</span> React <span class="tok-kw">from</span> <span class="tok-str">'react'</span>
-<span style="color:var(--meta);">…</span>
-<span class="tok-kw">export const</span> <span class="tok-fn">Card</span> = ({ title, children }: Props) =&gt; (
-  &lt;<span class="tok-tag">div</span> <span class="tok-attr">className</span>=<span class="tok-str">"bg-white border border-gray-200 rounded-xl p-5"</span>&gt;
-    &lt;<span class="tok-tag">h3</span> <span class="tok-attr">className</span>=<span class="tok-str">"text-gray-900 font-semibold"</span>&gt;{title}&lt;/<span class="tok-tag">h3</span>&gt;
-    &lt;<span class="tok-tag">div</span> <span class="tok-attr">className</span>=<span class="tok-str">"text-gray-600 mt-2"</span>&gt;{children}&lt;/<span class="tok-tag">div</span>&gt;
-  &lt;/<span class="tok-tag">div</span>&gt;
-)</div>
           </div>
 
           <div class="md">
@@ -573,22 +1038,11 @@ input, textarea { font: inherit; color: inherit; }
         </div>
 
         <div class="msg msg-model">
-          <div class="tool tool-collapsed">
-            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+          <div class="tool fv-tool" onclick="openFileViewer('card-write')">
+            <div class="tool-head">
               <span class="tool-badge write"><svg viewBox="0 0 12 12"><path d="M2 10l1.5-4 5-5 2.5 2.5-5 5L2 10z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>write</span>
               <span class="tool-target"><span class="path">src/components/</span>Card.tsx</span>
-              <span class="tool-status"><span class="ok">✓ 已写入 · +3 −3</span><svg class="chev-btn" width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
-            </div>
-            <div class="tool-body diff-unified">
-              <div class="diff-row ctx"><span class="sign"> </span>export const Card = ({ title, children }: Props) =&gt; (</div>
-              <div class="diff-row del"><span class="sign">-</span>  &lt;div className="bg-white border border-gray-200 rounded-xl p-5"&gt;</div>
-              <div class="diff-row add"><span class="sign">+</span>  &lt;div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 transition-colors"&gt;</div>
-              <div class="diff-row del"><span class="sign">-</span>    &lt;h3 className="text-gray-900 font-semibold"&gt;{title}&lt;/h3&gt;</div>
-              <div class="diff-row add"><span class="sign">+</span>    &lt;h3 className="text-gray-900 dark:text-gray-50 font-semibold"&gt;{title}&lt;/h3&gt;</div>
-              <div class="diff-row del"><span class="sign">-</span>    &lt;div className="text-gray-600 mt-2"&gt;{children}&lt;/div&gt;</div>
-              <div class="diff-row add"><span class="sign">+</span>    &lt;div className="text-gray-600 dark:text-gray-300 mt-2"&gt;{children}&lt;/div&gt;</div>
-              <div class="diff-row ctx"><span class="sign"> </span>  &lt;/div&gt;</div>
-              <div class="diff-row ctx"><span class="sign"> </span>)</div>
+              <span class="tool-status"><span class="ok">✓ 已写入 · +3 −3</span><svg class="fv-open-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5H3a.5.5 0 00-.5.5V9a.5.5 0 00.5.5h6a.5.5 0 00.5-.5V7.5"/><path d="M7 2.5h2.5V5"/><path d="M5.5 6.5L9.5 2.5"/></svg></span>
             </div>
           </div>
 
@@ -625,35 +1079,11 @@ input, textarea { font: inherit; color: inherit; }
             </div>
           </div>
 
-          <div class="tool tool-collapsed">
-            <div class="tool-head" onclick="this.parentElement.classList.toggle('tool-collapsed')">
+          <div class="tool fv-tool" onclick="openFileViewer('usetheme-write')">
+            <div class="tool-head">
               <span class="tool-badge write"><svg viewBox="0 0 12 12"><path d="M2 10l1.5-4 5-5 2.5 2.5-5 5L2 10z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>write</span>
               <span class="tool-target"><span class="path">src/hooks/</span>useTheme.ts</span>
-              <span class="tool-status"><span class="ok">✓ 新建 · 28 行</span><svg class="chev-btn" width="11" height="11" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
-            </div>
-            <div class="tool-body diff-unified">
-              <div class="diff-row add"><span class="sign">+</span>import { useEffect, useState } from 'react'</div>
-              <div class="diff-row add"><span class="sign">+</span></div>
-              <div class="diff-row add"><span class="sign">+</span>type Theme = 'light' | 'dark'</div>
-              <div class="diff-row add"><span class="sign">+</span>const KEY = 'athena-theme'</div>
-              <div class="diff-row add"><span class="sign">+</span></div>
-              <div class="diff-row add"><span class="sign">+</span>export function useTheme() {</div>
-              <div class="diff-row add"><span class="sign">+</span>  const [theme, setTheme] = useState&lt;Theme&gt;(() =&gt; {</div>
-              <div class="diff-row add"><span class="sign">+</span>    if (typeof window === 'undefined') return 'light'</div>
-              <div class="diff-row add"><span class="sign">+</span>    const saved = localStorage.getItem(KEY) as Theme | null</div>
-              <div class="diff-row add"><span class="sign">+</span>    if (saved) return saved</div>
-              <div class="diff-row add"><span class="sign">+</span>    return window.matchMedia('(prefers-color-scheme: dark)').matches</div>
-              <div class="diff-row add"><span class="sign">+</span>      ? 'dark' : 'light'</div>
-              <div class="diff-row add"><span class="sign">+</span>  })</div>
-              <div class="diff-row add"><span class="sign">+</span></div>
-              <div class="diff-row add"><span class="sign">+</span>  useEffect(() =&gt; {</div>
-              <div class="diff-row add"><span class="sign">+</span>    const root = document.documentElement</div>
-              <div class="diff-row add"><span class="sign">+</span>    root.classList.toggle('dark', theme === 'dark')</div>
-              <div class="diff-row add"><span class="sign">+</span>    localStorage.setItem(KEY, theme)</div>
-              <div class="diff-row add"><span class="sign">+</span>  }, [theme])</div>
-              <div class="diff-row add"><span class="sign">+</span></div>
-              <div class="diff-row add"><span class="sign">+</span>  return { theme, toggle: () =&gt; setTheme(t =&gt; t === 'dark' ? 'light' : 'dark') }</div>
-              <div class="diff-row add"><span class="sign">+</span>}</div>
+              <span class="tool-status"><span class="ok">✓ 新建 · 42 行</span><svg class="fv-open-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5H3a.5.5 0 00-.5.5V9a.5.5 0 00.5.5h6a.5.5 0 00.5-.5V7.5"/><path d="M7 2.5h2.5V5"/><path d="M5.5 6.5L9.5 2.5"/></svg></span>
             </div>
           </div>
         </div>
@@ -687,17 +1117,20 @@ input, textarea { font: inherit; color: inherit; }
 
       <div class="composer-wrap">
         <div class="composer">
+          <div class="attach-preview" id="attachPreview"></div>
           <textarea class="composer-textarea" id="input" placeholder="向 Athena 发送消息…  (⌘ Enter 发送 / Shift+Enter 换行)" rows="1"></textarea>
           <div class="composer-bar">
             <div class="left">
-              <button class="cbtn" title="添加文件">
-                <svg viewBox="0 0 15 15"><path d="M7.5 2v11M2 7.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-                <span>添加文件</span>
+              <button class="cbtn" title="添加文本文件" onclick="document.getElementById('textFileInput').click()">
+                <svg viewBox="0 0 15 15"><path d="M4 1.5h5L12.5 5v8.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M9 1.5V5h3.5M6 8h4M6 10.5h4" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                <span>文本</span>
               </button>
-              <button class="cbtn mode-toggle" id="modeBtn" title="Ask / Auto 模式切换" onclick="cycleMode()">
-                <span class="mode-pill" id="modePill">ask</span>
-                <span class="chev" style="width:10px;height:10px;"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+              <button class="cbtn" title="添加多模态文件（图片 / 视频 / 音频）" onclick="document.getElementById('mediaFileInput').click()">
+                <svg viewBox="0 0 15 15"><rect x="1.5" y="3" width="12" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="6.5" r="1" fill="currentColor"/><path d="M1.8 11l3-3 2.5 2.5 2-2 3.2 3.2" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+                <span>多模态</span>
               </button>
+              <input type="file" id="textFileInput" multiple accept="text/*,.md,.markdown,.json,.js,.mjs,.ts,.tsx,.jsx,.py,.html,.htm,.css,.scss,.xml,.yaml,.yml,.csv,.tsv,.log,.toml,.ini,.cfg,.sh,.bash,.go,.rs,.java,.c,.cc,.cpp,.h,.hpp,.rb,.php,.swift,.kt,.scala,.r,.sql,.vue,.svelte" hidden>
+              <input type="file" id="mediaFileInput" multiple accept="image/*,video/*,audio/*" hidden>
             </div>
             <div class="right">
               <button class="cbtn ctx-btn" title="上下文用量">
@@ -745,29 +1178,12 @@ input, textarea { font: inherit; color: inherit; }
                   <span id="thinkLabel">think: medium</span>
                   <span class="chev"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
                 </button>
-                <div class="menu" id="thinkMenu">
-                  <div class="menu-section-label">思维程度</div>
-                  <div class="menu-item" onclick="pickThink(this,'off','think: off')">
-                    <div class="mi-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="4" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
-                    <div class="mi-main"><div class="mi-title">关闭</div><div class="mi-sub">最快响应 · 不展示思维链</div></div>
-                  </div>
-                  <div class="menu-item" onclick="pickThink(this,'low','think: low')">
-                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M3 9.5L6.5 3 10 9.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
-                    <div class="mi-main"><div class="mi-title">轻量</div><div class="mi-sub">简单推理 · 约省 60% 时间</div></div>
-                  </div>
-                  <div class="menu-item active" onclick="pickThink(this,'medium','think: medium')">
-                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M3 10L6.5 3 10 10M4.5 7.5h4" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
-                    <div class="mi-main"><div class="mi-title">中等</div><div class="mi-sub">默认 · 平衡速度与质量</div></div>
-                    <span class="mi-tag">default</span>
-                  </div>
-                  <div class="menu-item" onclick="pickThink(this,'high','think: high')">
-                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M2 10L6.5 2 11 10M3.5 7h6" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
-                    <div class="mi-main"><div class="mi-title">深度</div><div class="mi-sub">复杂问题 · 完整思维链</div></div>
-                  </div>
-                  <div class="menu-item" onclick="pickThink(this,'max','think: max')">
-                    <div class="mi-icon"><svg viewBox="0 0 13 13"><path d="M1.5 10L6.5 1 11.5 10M3 6.5h7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
-                    <div class="mi-main"><div class="mi-title">最大</div><div class="mi-sub">研究级 · 可能耗时数分钟</div></div>
-                  </div>
+                <div class="menu compact" id="thinkMenu">
+                  <div class="menu-item" onclick="pickThink(this,'xhigh','think: xhigh')">xhigh</div>
+                  <div class="menu-item" onclick="pickThink(this,'high','think: high')">high</div>
+                  <div class="menu-item active" onclick="pickThink(this,'medium','think: medium')">medium</div>
+                  <div class="menu-item" onclick="pickThink(this,'low','think: low')">low</div>
+                  <div class="menu-item" onclick="pickThink(this,'default','think: default')">default</div>
                 </div>
               </div>
 
@@ -847,8 +1263,8 @@ input, textarea { font: inherit; color: inherit; }
             <div class="usage-val">12.4k</div>
           </div>
           <div class="usage-row">
-            <div class="usage-name"><span class="u-dot" style="background:#b14cff;"></span>Sonnet 4.5</div>
-            <div class="usage-bar"><div class="u-fill" style="width:54%;background:#b14cff;"></div></div>
+            <div class="usage-name"><span class="u-dot" style="background:var(--fg-2);"></span>Sonnet 4.5</div>
+            <div class="usage-bar"><div class="u-fill" style="width:54%;background:var(--fg-2);"></div></div>
             <div class="usage-val">8.2k</div>
           </div>
           <div class="usage-row">
@@ -879,6 +1295,264 @@ input, textarea { font: inherit; color: inherit; }
   </div>
 </div>
 
+<!-- Settings modal -->
+<div class="settings-overlay" id="settingsOverlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-dialog">
+    <header class="settings-header">
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.6v1.7M8 12.7v1.7M14.4 8h-1.7M3.3 8H1.6M12.5 3.5l-1.2 1.2M4.7 11.3l-1.2 1.2M12.5 12.5l-1.2-1.2M4.7 4.7L3.5 3.5"/></svg>
+      <h2 id="settingsTitle">设置</h2>
+      <span class="sh-sub">个性化你的 Athena</span>
+      <button class="settings-close" onclick="closeSettings()" aria-label="关闭"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg></button>
+    </header>
+    <div class="settings-body">
+      <nav class="settings-nav">
+        <div class="settings-nav-label">偏好设置</div>
+        <div class="settings-nav-item active" data-panel="model" onclick="switchSettingsPanel('model')">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/><path d="M4 5h6M4 8h4" stroke-linecap="round"/></svg>
+          模型设置
+        </div>
+        <div class="settings-nav-item" data-panel="mcp" onclick="switchSettingsPanel('mcp')">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="4" cy="4" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="7" cy="10" r="1.6"/><path d="M5.2 5.2l1.6 3.6M8.8 5.2L7.2 8.8M5.6 4h2.8" stroke-linecap="round"/></svg>
+          MCP 接入
+        </div>
+        <div class="settings-nav-item" data-panel="memory" onclick="switchSettingsPanel('memory')">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 3.5h10v6a1 1 0 01-1 1H3a1 1 0 01-1-1v-6z"/><path d="M2 3.5l5 4 5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          长期记忆
+        </div>
+      </nav>
+      <div class="settings-content">
+
+        <!-- ── PANEL: 模型设置 ── -->
+        <div class="settings-panel active" data-panel="model">
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">01</span><span class="settings-section-title">提供商</span></div>
+            <p class="settings-section-desc">配置默认模型服务的接入端点与凭证。密钥仅保存在本地，不会上传。</p>
+            <div class="field-row c2">
+              <div class="field">
+                <label class="field-label">提供商</label>
+                <select class="field-select" onchange="onProviderChange(this)">
+                  <option value="zhipu" selected>智谱 (ZhipuAI)</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="anthropic">Anthropic</option>
+                  <option value="deepseek">DeepSeek</option>
+                  <option value="moonshot">Moonshot</option>
+                  <option value="qwen">通义千问</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">Base URL</label>
+                <input class="field-input mono" id="providerBase" value="https://open.bigmodel.cn/api/paas/v4">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">API Key <span class="hint">仅本地保存</span></label>
+              <div class="field-secret">
+                <input class="field-input mono" id="providerKey" type="password" value="sk-9a3f7c2e1d8b4f6a0c5e3b7d">
+                <span class="reveal" onclick="toggleSecret(this)" title="显示/隐藏"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4z"/><circle cx="7" cy="7" r="1.6"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">02</span><span class="settings-section-title">代理设置</span></div>
+            <p class="settings-section-desc">为不同角色配置独立的模型、温度与系统提示词。</p>
+            <div class="entry-list" id="agentList">
+              <div class="entry-card">
+                <div class="entry-card-head">
+                  <span class="type-tag primary" data-ag-tag>primary</span>
+                  <span class="ec-title">GLM-5.2</span>
+                  <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+                  <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+                </div>
+                <div class="entry-fields">
+                  <div class="field-row c3">
+                    <div class="field"><label class="field-label">类型</label><select class="field-select" onchange="syncAgentTag(this)"><option value="primary" selected>primary</option><option value="subagent">subagent</option></select></div>
+                    <div class="field"><label class="field-label">提供商</label><select class="field-select"><option selected>智谱 (ZhipuAI)</option><option>OpenAI</option><option>Anthropic</option></select></div>
+                    <div class="field"><label class="field-label">模型</label><select class="field-select"><option selected>GLM-5.2</option><option>GLM-5.2-Air</option></select></div>
+                  </div>
+                  <div class="field">
+                    <label class="field-label">温度</label>
+                    <div class="field-range"><input type="range" min="0" max="2" step="0.1" value="0.7" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">0.7</span></div>
+                  </div>
+                  <div class="field"><label class="field-label">系统提示词</label><textarea class="field-textarea" placeholder="定义该代理的角色与行为…">你是 Athena，一位严谨、高效的编程助手。优先给出可运行的方案，避免冗长解释。</textarea></div>
+                </div>
+              </div>
+              <div class="entry-card">
+                <div class="entry-card-head">
+                  <span class="type-tag subagent" data-ag-tag>subagent</span>
+                  <span class="ec-title">Explore · GLM-5.2-Air</span>
+                  <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+                  <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+                </div>
+                <div class="entry-fields">
+                  <div class="field-row c3">
+                    <div class="field"><label class="field-label">类型</label><select class="field-select" onchange="syncAgentTag(this)"><option value="primary">primary</option><option value="subagent" selected>subagent</option></select></div>
+                    <div class="field"><label class="field-label">提供商</label><select class="field-select"><option>智谱 (ZhipuAI)</option><option selected>Anthropic</option></select></div>
+                    <div class="field"><label class="field-label">模型</label><select class="field-select"><option>Sonnet 4.5</option><option selected>GLM-5.2-Air</option></select></div>
+                  </div>
+                  <div class="field">
+                    <label class="field-label">温度</label>
+                    <div class="field-range"><input type="range" min="0" max="2" step="0.1" value="0.3" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">0.3</span></div>
+                  </div>
+                  <div class="field"><label class="field-label">系统提示词</label><textarea class="field-textarea" placeholder="定义该代理的角色与行为…">你是探索代理。只读、不修改文件，快速定位相关代码与依赖关系，返回简洁的路径与结论。</textarea></div>
+                </div>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addAgent()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6.5 2v9M2 6.5h9"/></svg>添加代理</button>
+          </div>
+        </div>
+
+        <!-- ── PANEL: MCP 接入 ── -->
+        <div class="settings-panel" data-panel="mcp">
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">01</span><span class="settings-section-title">已接入的服务器</span></div>
+            <p class="settings-section-desc">管理已连接的 Model Context Protocol 服务器。关闭开关可临时停用。</p>
+            <div class="entry-list" id="mcpList">
+              <div class="entry-card">
+                <div class="entry-card-head">
+                  <span class="type-tag stdio">stdio</span>
+                  <span class="ec-title">filesystem</span>
+                  <span class="ec-status"><span class="dot"></span>8 tools · 已连接</span>
+                  <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+                  <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+                </div>
+                <div class="entry-fields">
+                  <div class="field"><label class="field-label">command</label><input class="field-input mono" value="npx"></div>
+                  <div class="field"><label class="field-label">args <span class="hint">每行一个参数</span></label><textarea class="field-textarea mono">-y
+@modelcontextprotocol/server-filesystem
+/Users/me/projects</textarea></div>
+                  <div class="field"><label class="field-label">env <span class="hint">KEY=VALUE，每行一个</span></label><textarea class="field-textarea mono" placeholder="可选"></textarea></div>
+                </div>
+              </div>
+              <div class="entry-card">
+                <div class="entry-card-head">
+                  <span class="type-tag stdio">stdio</span>
+                  <span class="ec-title">git</span>
+                  <span class="ec-status"><span class="dot"></span>12 tools · 已连接</span>
+                  <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+                  <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+                </div>
+                <div class="entry-fields">
+                  <div class="field"><label class="field-label">command</label><input class="field-input mono" value="uvx"></div>
+                  <div class="field"><label class="field-label">args <span class="hint">每行一个参数</span></label><textarea class="field-textarea mono">mcp-server-git
+--repository
+/Users/me/projects/athena</textarea></div>
+                  <div class="field"><label class="field-label">env <span class="hint">KEY=VALUE，每行一个</span></label><textarea class="field-textarea mono" placeholder="可选"></textarea></div>
+                </div>
+              </div>
+              <div class="entry-card">
+                <div class="entry-card-head">
+                  <span class="type-tag remote">remote</span>
+                  <span class="ec-title">browser</span>
+                  <span class="ec-status"><span class="dot"></span>5 tools · 已连接</span>
+                  <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+                  <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+                </div>
+                <div class="entry-fields">
+                  <div class="field"><label class="field-label">URL</label><input class="field-input mono" value="https://mcp.browser.example.com/sse"></div>
+                  <div class="field"><label class="field-label">headers <span class="hint">KEY: VALUE，每行一个</span></label><textarea class="field-textarea mono">Authorization: Bearer mcp_br_8f2a9c1e</textarea></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">02</span><span class="settings-section-title">推荐接入</span></div>
+            <p class="settings-section-desc">常用 MCP 服务器，点击加号一键添加。</p>
+            <div class="mcp-suggest-list">
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">playwright</div><div class="ms-desc">浏览器自动化与抓取</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'playwright')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">github</div><div class="ms-desc">仓库、Issue、PR 管理</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'github')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">sqlite</div><div class="ms-desc">本地 SQLite 查询</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'sqlite')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">fetch</div><div class="ms-desc">网页抓取与转换</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'fetch')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">memory</div><div class="ms-desc">跨会话知识图谱</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'memory')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+              <div class="mcp-suggest-item"><div class="ms-info"><div class="ms-name">time</div><div class="ms-desc">时区与时间工具</div></div><span class="ms-add" onclick="addSuggestedMcp(this,'time')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">03</span><span class="settings-section-title">自定义添加</span></div>
+            <p class="settings-section-desc">手动配置一个 MCP 服务器。</p>
+            <div class="field-row c2">
+              <div class="field"><label class="field-label">类型</label><select class="field-select" id="mcpAddType" onchange="toggleMcpAddFields()"><option value="stdio">stdio</option><option value="remote">remote</option></select></div>
+              <div class="field"><label class="field-label">名称</label><input class="field-input" id="mcpAddName" placeholder="例如：my-server"></div>
+            </div>
+            <div id="mcpAddStdio">
+              <div class="field"><label class="field-label">command</label><input class="field-input mono" id="mcpAddCmd" placeholder="npx"></div>
+              <div class="field"><label class="field-label">args <span class="hint">每行一个参数</span></label><textarea class="field-textarea mono" id="mcpAddArgs" placeholder="-y&#10;package-name"></textarea></div>
+              <div class="field"><label class="field-label">env <span class="hint">KEY=VALUE，每行一个</span></label><textarea class="field-textarea mono" id="mcpAddEnv" placeholder="可选"></textarea></div>
+            </div>
+            <div id="mcpAddRemote" style="display:none">
+              <div class="field"><label class="field-label">URL</label><input class="field-input mono" id="mcpAddUrl" placeholder="https://..."></div>
+              <div class="field"><label class="field-label">headers <span class="hint">KEY: VALUE，每行一个</span></label><textarea class="field-textarea mono" id="mcpAddHeaders" placeholder="Authorization: Bearer ..."></textarea></div>
+            </div>
+            <div style="margin-top:4px;"><button class="s-btn primary" onclick="addCustomMcp()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6.5 2v9M2 6.5h9"/></svg>添加服务器</button></div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: 长期记忆 ── -->
+        <div class="settings-panel" data-panel="memory">
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">01</span><span class="settings-section-title">用户画像</span></div>
+            <p class="settings-section-desc">帮助 Athena 了解你是谁、用什么技术栈、在什么环境工作。</p>
+            <textarea class="field-textarea memory-field" data-mem="profile" style="min-height:96px">资深前端工程师，主要使用 TypeScript + React 18 + Vite。系统为 macOS（Apple Silicon），终端用 zsh + pnpm。代码风格偏好函数式、强类型，禁用 any。</textarea>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">02</span><span class="settings-section-title">聊天风格</span></div>
+            <p class="settings-section-desc">希望 Athena 如何与你交流。</p>
+            <textarea class="field-textarea memory-field" data-mem="style" style="min-height:96px">简洁直接，先给结论再给代码。中文交流，代码与注释用英文。改动尽量小，遵循现有约定。</textarea>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-head"><span class="settings-section-num">03</span><span class="settings-section-title">必须遵守的限制</span></div>
+            <p class="settings-section-desc">每次对话都必须遵守的硬性约束。</p>
+            <textarea class="field-textarea memory-field" data-mem="limits" style="min-height:96px">不要修改 src/legacy/ 目录下的任何文件。提交前必须运行 pnpm test 与 pnpm lint。不要引入新的运行时依赖，除非先征得同意。</textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <footer class="settings-footer">
+      <span class="save-status" id="settingsSaveStatus">所有更改将在保存后生效</span>
+      <button class="s-btn ghost" onclick="closeSettings()">取消</button>
+      <button class="s-btn primary" onclick="saveSettings()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5L5.5 10 11 3"/></svg>保存</button>
+    </footer>
+  </div>
+</div>
+
+<!-- File viewer modal -->
+<div class="fv-overlay" id="fvOverlay" role="dialog" aria-modal="true" aria-labelledby="fvTitle" onclick="if(event.target===this)closeFileViewer()">
+  <div class="fv-dialog">
+    <header class="fv-header">
+      <svg class="fv-file-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M3 1.5h5.5L13 6v8a.5.5 0 01-.5.5h-9.5a.5.5 0 01-.5-.5v-12.5a.5.5 0 01.5-.5z"/><path d="M8.5 1.5V6H13"/></svg>
+      <span class="fv-path" id="fvPath"><span class="fv-pathdir">src/</span>—</span>
+      <span class="fv-langtag" id="fvLangtag">TSX</span>
+      <span class="fv-spacer"></span>
+      <button class="fv-icon-btn" onclick="fvCopy()" title="复制当前视图内容" aria-label="复制"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="5" y="5" width="8" height="8" rx="1.3"/><path d="M3 11V3.5a.5.5 0 01.5-.5H11" stroke-linecap="round"/></svg></button>
+      <button class="fv-icon-btn" onclick="closeFileViewer()" aria-label="关闭" title="关闭 (Esc)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg></button>
+    </header>
+    <div class="fv-toolbar">
+      <div class="fv-tabs" id="fvTabs">
+        <span class="fv-tab active" data-mode="source" onclick="switchFileView('source')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3L2 7l3 4M9 3l3 4-3 4"/></svg>源文件</span>
+        <span class="fv-tab" data-mode="diff" onclick="switchFileView('diff')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h4M4 2v4M9 2v6M8 9l1.5 3 1.5-3"/></svg>差异<span class="fv-tab-badge" id="fvDiffBadge">±0</span></span>
+      </div>
+      <span class="fv-tb-meta"><span id="fvModeMeta">源文件视图</span></span>
+    </div>
+    <div class="fv-body">
+      <div class="fv-scroller" id="fvScroller">
+        <div class="fv-code" id="fvCode"></div>
+      </div>
+      <div class="fv-toast" id="fvToast">已复制</div>
+    </div>
+    <footer class="fv-footer">
+      <span class="fv-stat"><span class="fv-stat-v" id="fvLines">0</span> 行</span>
+      <span class="fv-dot"></span>
+      <span class="fv-stat"><span class="fv-stat-v" id="fvLang">—</span></span>
+      <span class="fv-dot"></span>
+      <span class="fv-stat"><span class="fv-stat-v" id="fvSize">—</span></span>
+      <span class="fv-plusminus" id="fvPlusMinus"></span>
+    </footer>
+  </div>
+</div>
+
 <script>
 const app = document.getElementById('app');
 document.getElementById('btnSidebar').addEventListener('click', () => {
@@ -893,15 +1567,63 @@ function toggleMenu(menuId, btn){ const menu = document.getElementById(menuId); 
 document.addEventListener('click', (e) => { if(!e.target.closest('.cbtn') && !e.target.closest('.menu')){ document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); document.querySelectorAll('.cbtn[aria-expanded]').forEach(b => b.setAttribute('aria-expanded','false')); } });
 function pickModel(el, name){ document.querySelectorAll('#modelMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.querySelector('#modelBtn span:nth-of-type(1)').textContent = name; document.getElementById('modelMenu').classList.remove('open'); document.getElementById('modelBtn').setAttribute('aria-expanded','false'); }
 function pickThink(el, val, label){ document.querySelectorAll('#thinkMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.getElementById('thinkLabel').textContent = label; document.getElementById('thinkMenu').classList.remove('open'); document.getElementById('thinkBtn').setAttribute('aria-expanded','false'); }
-const MODES = ['ask','auto','plan']; let modeIdx = 0;
-function cycleMode(){ modeIdx = (modeIdx + 1) % MODES.length; document.getElementById('modePill').textContent = MODES[modeIdx]; }
 function flashSend(btn){ btn.style.transform = 'scale(0.9)'; setTimeout(() => btn.style.transform = '', 120); }
 function flashWin(btn){ btn.style.background = btn.classList.contains('close') ? 'var(--win-close-hover)' : 'var(--win-btn-hover)'; setTimeout(() => btn.style.background = '', 200); }
 const input = document.getElementById('input');
 input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 180) + 'px'; });
 input.addEventListener('keydown', (e) => { if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); flashSend(document.getElementById('sendBtn')); } });
+
+const attachedFiles = [];
+let attachIdSeq = 0;
+const X_SVG = '<svg viewBox="0 0 10 10"><path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+const DOC_ICON = '<svg viewBox="0 0 15 15"><path d="M4 1.5h5L12.5 5v8.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M9 1.5V5h3.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
+const VIDEO_ICON = '<svg viewBox="0 0 15 15"><rect x="1.5" y="3.5" width="8.5" height="8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M10 6l3.2-1.8v6.6L10 9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+const AUDIO_ICON = '<svg viewBox="0 0 15 15"><path d="M4 9.5h7M11 9.5V4.5L7 3.5v6M4 9.5a1.5 1.5 0 1 0 0 0.01M11 9.5a1.5 1.5 0 1 0 0 0.01" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function addFiles(fileList, kind) {
+  Array.from(fileList).forEach(file => {
+    const item = { id: ++attachIdSeq, file, kind, url: null, isImage: file.type.startsWith('image/') };
+    if (item.isImage) item.url = URL.createObjectURL(file);
+    attachedFiles.push(item);
+  });
+  renderAttachments();
+}
+function removeAttachment(id) {
+  const idx = attachedFiles.findIndex(f => f.id === id);
+  if (idx < 0) return;
+  if (attachedFiles[idx].url) URL.revokeObjectURL(attachedFiles[idx].url);
+  attachedFiles.splice(idx, 1);
+  renderAttachments();
+}
+function renderAttachments() {
+  const container = document.getElementById('attachPreview');
+  if (attachedFiles.length === 0) { container.classList.remove('has-files'); container.innerHTML = ''; return; }
+  container.classList.add('has-files');
+  container.innerHTML = '';
+  attachedFiles.forEach(item => {
+    if (item.isImage) {
+      const el = document.createElement('div');
+      el.className = 'attach-thumb';
+      el.innerHTML = `<img src="${item.url}" alt=""><div class="remove" title="移除">${X_SVG}</div>`;
+      el.querySelector('.remove').addEventListener('click', () => removeAttachment(item.id));
+      container.appendChild(el);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'attach-chip';
+      const icon = item.kind === 'text'
+        ? DOC_ICON
+        : (item.file.type.startsWith('video/') ? VIDEO_ICON : AUDIO_ICON);
+      el.innerHTML = icon + `<span class="name" title="${item.file.name}">${item.file.name}</span><div class="remove" title="移除">${X_SVG}</div>`;
+      el.querySelector('.remove').addEventListener('click', () => removeAttachment(item.id));
+      container.appendChild(el);
+    }
+  });
+}
+document.getElementById('textFileInput').addEventListener('change', e => { addFiles(e.target.files, 'text'); e.target.value = ''; });
+document.getElementById('mediaFileInput').addEventListener('change', e => { addFiles(e.target.files, 'media'); e.target.value = ''; });
 document.querySelectorAll('.task-row').forEach(row => { row.addEventListener('click', () => { document.querySelectorAll('.task-row').forEach(r => r.classList.remove('active')); row.classList.add('active'); }); });
 document.querySelectorAll('.ws-group').forEach(group => { group.querySelectorAll('.task-row').forEach((r, i) => r.dataset.oi = i); });
+document.querySelectorAll('.ws-header').forEach(h => { h.addEventListener('click', () => { h.closest('.ws-group').classList.toggle('collapsed'); }); });
 function arrangeGroup(group){
   const header = group.querySelector(':scope > .ws-header');
   const rows = Array.from(group.querySelectorAll(':scope > .task-row'));
@@ -924,6 +1646,437 @@ document.querySelectorAll('.task-pin').forEach(pin => {
 });
 document.querySelectorAll('.change-row').forEach(row => { row.addEventListener('click', () => row.classList.toggle('staged')); });
 document.querySelectorAll('.todo-row').forEach(row => { row.querySelector('.todo-check').addEventListener('click', () => row.classList.toggle('done')); });
+
+function appMenuAction(action){
+  const menu = document.getElementById('appMenu');
+  const btn = document.getElementById('appMenuBtn');
+  menu.classList.remove('open');
+  btn.setAttribute('aria-expanded','false');
+  if(action === 'settings'){ openSettings(); }
+  else if(action === 'theme'){ toggleTheme(); }
+  else if(action === 'exit'){ /* TODO: 退出登录 / 关闭窗口 */ }
+}
+function toggleTheme(){
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try { localStorage.setItem('athena-theme', next); } catch(e){}
+  const btn = document.getElementById('footThemeBtn');
+  if(btn) btn.title = (next === 'dark' ? '切换到浅色' : '切换到深色');
+}
+(function(){
+  try {
+    const t = localStorage.getItem('athena-theme');
+    if(t){
+      document.documentElement.setAttribute('data-theme', t);
+      const btn = document.getElementById('footThemeBtn');
+      if(btn) btn.title = (t === 'dark' ? '切换到浅色' : '切换到深色');
+    }
+  } catch(e){}
+})();
+
+/* ── Settings modal ────────────────────────────────────────────── */
+function openSettings(){
+  document.getElementById('settingsOverlay').classList.add('open');
+  switchSettingsPanel('model');
+}
+function closeSettings(){ document.getElementById('settingsOverlay').classList.remove('open'); }
+function switchSettingsPanel(name){
+  document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.toggle('active', i.dataset.panel === name));
+  document.querySelectorAll('.settings-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+}
+function toggleSecret(el){
+  const inp = el.parentElement.querySelector('input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function syncAgentTag(sel){
+  const tag = sel.closest('.entry-card').querySelector('[data-ag-tag]');
+  tag.textContent = sel.value;
+  tag.className = 'type-tag ' + sel.value;
+}
+function addAgent(){
+  const html = `<div class="entry-card">
+    <div class="entry-card-head">
+      <span class="type-tag subagent" data-ag-tag>subagent</span>
+      <span class="ec-title">新代理</span>
+      <span class="entry-toggle on" onclick="this.classList.toggle('on')"></span>
+      <span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span>
+    </div>
+    <div class="entry-fields">
+      <div class="field-row c3">
+        <div class="field"><label class="field-label">类型</label><select class="field-select" onchange="syncAgentTag(this)"><option value="primary">primary</option><option value="subagent" selected>subagent</option></select></div>
+        <div class="field"><label class="field-label">提供商</label><select class="field-select"><option selected>智谱 (ZhipuAI)</option><option>OpenAI</option><option>Anthropic</option><option>DeepSeek</option></select></div>
+        <div class="field"><label class="field-label">模型</label><select class="field-select"><option selected>GLM-5.2-Air</option><option>GLM-5.2</option></select></div>
+      </div>
+      <div class="field"><label class="field-label">温度</label><div class="field-range"><input type="range" min="0" max="2" step="0.1" value="0.7" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">0.7</span></div></div>
+      <div class="field"><label class="field-label">系统提示词</label><textarea class="field-textarea" placeholder="定义该代理的角色与行为…"></textarea></div>
+    </div>
+  </div>`;
+  document.getElementById('agentList').insertAdjacentHTML('beforeend', html);
+}
+function toggleMcpAddFields(){
+  const type = document.getElementById('mcpAddType').value;
+  document.getElementById('mcpAddStdio').style.display = type === 'stdio' ? '' : 'none';
+  document.getElementById('mcpAddRemote').style.display = type === 'remote' ? '' : 'none';
+}
+function escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function addCustomMcp(){
+  const type = document.getElementById('mcpAddType').value;
+  const name = document.getElementById('mcpAddName').value.trim() || '未命名';
+  let inner = '';
+  if(type === 'stdio'){
+    const cmd = document.getElementById('mcpAddCmd').value.trim() || 'npx';
+    const args = document.getElementById('mcpAddArgs').value.trim();
+    const env = document.getElementById('mcpAddEnv').value.trim();
+    inner = `<div class="field"><label class="field-label">command</label><input class="field-input mono" value="${escAttr(cmd)}"></div>`
+      + `<div class="field"><label class="field-label">args <span class="hint">每行一个参数</span></label><textarea class="field-textarea mono">${escAttr(args)}</textarea></div>`
+      + `<div class="field"><label class="field-label">env <span class="hint">KEY=VALUE，每行一个</span></label><textarea class="field-textarea mono" placeholder="可选">${escAttr(env)}</textarea></div>`;
+  } else {
+    const url = document.getElementById('mcpAddUrl').value.trim();
+    const headers = document.getElementById('mcpAddHeaders').value.trim();
+    inner = `<div class="field"><label class="field-label">URL</label><input class="field-input mono" value="${escAttr(url)}"></div>`
+      + `<div class="field"><label class="field-label">headers <span class="hint">KEY: VALUE，每行一个</span></label><textarea class="field-textarea mono">${escAttr(headers)}</textarea></div>`;
+  }
+  const card = `<div class="entry-card"><div class="entry-card-head"><span class="type-tag ${type}">${type}</span><span class="ec-title">${escAttr(name)}</span><span class="ec-status off"><span class="dot"></span>待连接</span><span class="entry-toggle on" onclick="this.classList.toggle('on')"></span><span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span></div><div class="entry-fields">${inner}</div></div>`;
+  document.getElementById('mcpList').insertAdjacentHTML('beforeend', card);
+  ['mcpAddName','mcpAddCmd','mcpAddArgs','mcpAddEnv','mcpAddUrl','mcpAddHeaders'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
+  flashSave('已添加 ' + name);
+}
+function addSuggestedMcp(el, name){
+  const item = el.closest('.mcp-suggest-item');
+  if(item.classList.contains('added')) return;
+  item.classList.add('added');
+  el.innerHTML = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5L6 10.5 11 4"/></svg>';
+  const presets = {
+    playwright: { cmd:'npx', args:'-y\n@modelcontextprotocol/server-playwright' },
+    github:     { cmd:'npx', args:'-y\n@modelcontextprotocol/server-github' },
+    sqlite:     { cmd:'uvx', args:'mcp-server-sqlite' },
+    fetch:      { cmd:'uvx', args:'mcp-server-fetch' },
+    memory:     { cmd:'npx', args:'-y\n@modelcontextprotocol/server-memory' },
+    time:       { cmd:'uvx', args:'mcp-server-time' }
+  };
+  const p = presets[name] || { cmd:'npx', args:'' };
+  const card = `<div class="entry-card"><div class="entry-card-head"><span class="type-tag stdio">stdio</span><span class="ec-title">${escAttr(name)}</span><span class="ec-status off"><span class="dot"></span>待连接</span><span class="entry-toggle on" onclick="this.classList.toggle('on')"></span><span class="entry-remove" onclick="this.closest('.entry-card').remove()"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 3l7 7M10 3l-7 7"/></svg></span></div><div class="entry-fields"><div class="field"><label class="field-label">command</label><input class="field-input mono" value="${escAttr(p.cmd)}"></div><div class="field"><label class="field-label">args <span class="hint">每行一个参数</span></label><textarea class="field-textarea mono">${escAttr(p.args)}</textarea></div><div class="field"><label class="field-label">env <span class="hint">KEY=VALUE，每行一个</span></label><textarea class="field-textarea mono" placeholder="可选"></textarea></div></div></div>`;
+  document.getElementById('mcpList').insertAdjacentHTML('beforeend', card);
+}
+function onProviderChange(sel){
+  const urls = { zhipu:'https://open.bigmodel.cn/api/paas/v4', openai:'https://api.openai.com/v1', anthropic:'https://api.anthropic.com', deepseek:'https://api.deepseek.com', moonshot:'https://api.moonshot.cn/v1', qwen:'https://dashscope.aliyuncs.com/api/v1' };
+  const u = urls[sel.value]; if(u) document.getElementById('providerBase').value = u;
+}
+function saveSettings(){
+  try {
+    const mem = {};
+    document.querySelectorAll('.memory-field').forEach(t => { mem[t.dataset.mem] = t.value; });
+    localStorage.setItem('athena-settings', JSON.stringify({ memory: mem, ts: Date.now() }));
+  } catch(e){}
+  flashSave('设置已保存');
+  setTimeout(closeSettings, 450);
+}
+function flashSave(msg){
+  const s = document.getElementById('settingsSaveStatus');
+  if(!s) return;
+  s.textContent = msg;
+  s.style.color = 'var(--success)';
+  setTimeout(() => { s.textContent = '所有更改将在保存后生效'; s.style.color = ''; }, 1800);
+}
+
+/* ── File viewer modal ─────────────────────────────────────────── */
+const CARD_SOURCE =
+`import React from 'react'
+import { cn } from '@/lib/utils'
+import { MoreHorizontal } from 'lucide-react'
+
+interface CardProps {
+  title: string
+  description?: string
+  children: React.ReactNode
+  footer?: React.ReactNode
+  actions?: React.ReactNode
+  className?: string
+}
+
+/**
+ * Card — grouped content surface for dashboards and lists.
+ */
+export const Card = ({
+  title,
+  description,
+  children,
+  footer,
+  actions,
+  className,
+}: CardProps) => {
+  return (
+    <div
+      className={cn(
+        'bg-white border border-gray-200 rounded-xl p-5',
+        className,
+      )}
+    >
+      <header className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-gray-900 font-semibold">{title}</h3>
+          {description ? (
+            <p className="text-gray-500 text-sm mt-0.5">{description}</p>
+          ) : null}
+        </div>
+        {actions ?? (
+          <button className="text-gray-400 hover:text-gray-600">
+            <MoreHorizontal size={16} />
+          </button>
+        )}
+      </header>
+      <div className="text-gray-600 dark:text-gray-300 mt-3">{children}</div>
+      {footer ? (
+        <footer className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">{footer}</footer>
+      ) : null}
+    </div>
+  )
+}
+
+export default Card`;
+
+const CARD_SOURCE_ORIG =
+`import React from 'react'
+import { cn } from '@/lib/utils'
+import { MoreHorizontal } from 'lucide-react'
+
+interface CardProps {
+  title: string
+  description?: string
+  children: React.ReactNode
+  footer?: React.ReactNode
+  actions?: React.ReactNode
+  className?: string
+}
+
+/**
+ * Card — grouped content surface for dashboards and lists.
+ */
+export const Card = ({
+  title,
+  description,
+  children,
+  footer,
+  actions,
+  className,
+}: CardProps) => {
+  return (
+    <div
+      className={cn(
+        'bg-white border border-gray-200 rounded-xl p-5',
+        className,
+      )}
+    >
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-gray-900 font-semibold">{title}</h3>
+          {description ? (
+            <p className="text-gray-500 text-sm mt-0.5">{description}</p>
+          ) : null}
+        </div>
+        {actions ?? (
+          <button className="text-gray-400 hover:text-gray-600">
+            <MoreHorizontal size={16} />
+          </button>
+        )}
+      </header>
+      <div className="text-gray-600 mt-3">{children}</div>
+      {footer ? (
+        <footer className="mt-4 pt-3 border-t border-gray-100">{footer}</footer>
+      ) : null}
+    </div>
+  )
+}
+
+export default Card`;
+
+const USETHEME_SOURCE =
+`import { useEffect, useState } from 'react'
+
+type Theme = 'light' | 'dark'
+
+const KEY = 'athena-theme'
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement
+  root.classList.toggle('dark', theme === 'dark')
+}
+
+export function useTheme() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return 'light'
+    const saved = localStorage.getItem(KEY) as Theme | null
+    if (saved) return saved
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light'
+  })
+
+  useEffect(() => {
+    applyTheme(theme)
+    localStorage.setItem(KEY, theme)
+  }, [theme])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = () => {
+      if (!localStorage.getItem(KEY)) {
+        setTheme(mq.matches ? 'dark' : 'light')
+      }
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  return {
+    theme,
+    toggle: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
+  }
+}`;
+
+const CARD_DIFF = [
+  { head: '@@ -24,7 +24,7 @@', lines: [
+    { t:'ctx', o:24, n:24, text:'      <header className="flex items-start justify-between gap-3">' },
+    { t:'del', o:25, n:0,  text:'        <div>' },
+    { t:'add', o:0,  n:25, text:'        <div className="min-w-0 flex-1">' },
+    { t:'ctx', o:26, n:26, text:'          <h3 className="text-gray-900 font-semibold">{title}</h3>' },
+  ]},
+  { head: '@@ -31,9 +32,9 @@', lines: [
+    { t:'ctx', o:31, n:32, text:'      </header>' },
+    { t:'del', o:32, n:0,  text:'      <div className="text-gray-600 mt-3">{children}</div>' },
+    { t:'add', o:0,  n:33, text:'      <div className="text-gray-600 dark:text-gray-300 mt-3">{children}</div>' },
+    { t:'ctx', o:33, n:34, text:'      {footer ? (' },
+    { t:'del', o:34, n:0,  text:'        <footer className="mt-4 pt-3 border-t border-gray-100">{footer}</footer>' },
+    { t:'add', o:0,  n:35, text:'        <footer className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">{footer}</footer>' },
+    { t:'ctx', o:35, n:36, text:'      ) : null}' },
+  ]},
+];
+
+const USETHEME_DIFF = (function(){
+  const lines = USETHEME_SOURCE.split('\n').map((txt, i) => ({ t:'add', o:0, n:i+1, text:txt }));
+  return [{ head: '@@ -0,0 +1,' + lines.length + ' @@', lines }];
+})();
+
+const FILE_DATA = {
+  'card-read': {
+    dir: 'src/components/', name: 'Card.tsx', lang: 'tsx', langLabel: 'TypeScript JSX',
+    size: '1.4 kB', mode: 'source', source: CARD_SOURCE_ORIG,
+  },
+  'card-write': {
+    dir: 'src/components/', name: 'Card.tsx', lang: 'tsx', langLabel: 'TypeScript JSX',
+    size: '1.5 kB', mode: 'diff', added: 3, removed: 3, source: CARD_SOURCE, diff: CARD_DIFF,
+  },
+  'usetheme-write': {
+    dir: 'src/hooks/', name: 'useTheme.ts', lang: 'ts', langLabel: 'TypeScript',
+    size: '1.1 kB', mode: 'diff', added: USETHEME_DIFF[0].lines.length, removed: 0,
+    source: USETHEME_SOURCE, diff: USETHEME_DIFF,
+  },
+};
+
+let fvCurrent = null;
+let fvActiveMode = 'source';
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function hl(line){
+  let s = escHtml(line);
+  const slots = [];
+  const stash = (cls, m) => { slots.push('<span class="'+cls+'">'+m+'</span>'); return '\u0000'+(slots.length-1)+'\u0001'; };
+  s = s.replace(/\/\/[^\n]*/g, m => stash('tok-com', m));
+  s = s.replace(/\/\*[\s\S]*?\*\//g, m => stash('tok-com', m));
+  s = s.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, m => stash('tok-str', m));
+  s = s.replace(/\b(import|export|from|const|let|var|function|return|if|else|for|while|switch|case|break|continue|type|interface|extends|implements|enum|new|class|default|async|await|yield|null|undefined|true|false|void|this|typeof|instanceof|in|of|as|public|private|protected|readonly|static|namespace|declare|abstract)\b/g, '<span class="tok-kw">$1</span>');
+  s = s.replace(/\b([A-Za-z_$][\w$]*)(?=\s*\()/g, '<span class="tok-fn">$1</span>');
+  s = s.replace(/(&lt;\/?)([A-Za-z][\w.]*)/g, '$1<span class="tok-tag">$2</span>');
+  s = s.replace(/\u0000(\d+)\u0001/g, (_, i) => slots[+i]);
+  return s.length ? s : '&nbsp;';
+}
+
+function renderSource(src){
+  return src.split('\n').map((ln, i) =>
+    '<span class="fv-cl"><span class="fv-gutter">'+(i+1)+'</span>'+hl(ln)+'</span>'
+  ).join('');
+}
+
+function renderDiff(diff){
+  let out = '';
+  diff.forEach(h => {
+    out += '<span class="fv-hunk">'+escHtml(h.head)+'</span>';
+    h.lines.forEach(r => {
+      const o = r.o ? r.o : '', n = r.n ? r.n : '';
+      const sign = r.t === 'add' ? '+' : r.t === 'del' ? '−' : ' ';
+      out += '<span class="fv-drow '+r.t+'"><span class="fv-gut-old">'+o+'</span><span class="fv-gut-new">'+n+'</span><span class="fv-sign">'+sign+'</span><span class="fv-text">'+hl(r.text)+'</span></span>';
+    });
+  });
+  return out;
+}
+
+function openFileViewer(key, opts){
+  const d = FILE_DATA[key];
+  if(!d) return;
+  fvCurrent = d;
+  const hasDiff = !!d.diff;
+  document.getElementById('fvPath').innerHTML = '<span class="fv-pathdir">'+escHtml(d.dir)+'</span>'+escHtml(d.name);
+  document.getElementById('fvLangtag').textContent = d.lang.toUpperCase();
+  document.getElementById('fvLang').textContent = d.langLabel;
+  document.getElementById('fvSize').textContent = d.size;
+  document.getElementById('fvLines').textContent = d.source.split('\n').length;
+  document.querySelectorAll('#fvTabs .fv-tab').forEach(t => {
+    t.style.display = (t.dataset.mode === 'diff' && !hasDiff) ? 'none' : '';
+  });
+  const badge = document.getElementById('fvDiffBadge');
+  if(hasDiff){ badge.textContent = '+' + d.added + ' / −' + d.removed; }
+  document.getElementById('fvPlusMinus').innerHTML = hasDiff
+    ? '<span class="p">+' + d.added + '</span><span class="m">−' + d.removed + '</span>'
+    : '';
+  let mode = (opts && opts.mode) ? opts.mode : d.mode;
+  if(mode === 'diff' && !hasDiff) mode = 'source';
+  switchFileView(mode);
+  document.getElementById('fvOverlay').classList.add('open');
+}
+
+function switchFileView(mode){
+  if(!fvCurrent) return;
+  const hasDiff = !!fvCurrent.diff;
+  if(mode === 'diff' && !hasDiff) mode = 'source';
+  fvActiveMode = mode;
+  document.querySelectorAll('#fvTabs .fv-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  document.getElementById('fvModeMeta').textContent = mode === 'diff' ? 'Unified diff · 旧 → 新' : '源文件视图';
+  const box = document.getElementById('fvCode');
+  box.className = mode === 'diff' ? 'fv-diff' : 'fv-code';
+  box.innerHTML = mode === 'diff' ? renderDiff(fvCurrent.diff) : renderSource(fvCurrent.source);
+  document.getElementById('fvScroller').scrollTop = 0;
+  document.getElementById('fvScroller').scrollLeft = 0;
+}
+
+function closeFileViewer(){ document.getElementById('fvOverlay').classList.remove('open'); }
+
+function fvCopy(){
+  if(!fvCurrent) return;
+  let text;
+  if(fvActiveMode === 'diff'){
+    text = fvCurrent.diff.map(h => h.head + '\n' + h.lines.map(r => (r.t === 'add' ? '+' : r.t === 'del' ? '-' : ' ') + r.text).join('\n')).join('\n');
+  } else {
+    text = fvCurrent.source;
+  }
+  try { navigator.clipboard.writeText(text); } catch(e){}
+  const t = document.getElementById('fvToast');
+  t.classList.add('show');
+  clearTimeout(window._fvToastT);
+  window._fvToastT = setTimeout(() => t.classList.remove('show'), 1200);
+}
+
+document.addEventListener('keydown', (e) => {
+  const ov = document.getElementById('settingsOverlay');
+  const fv = document.getElementById('fvOverlay');
+  if(e.key === 'Escape'){
+    if(fv.classList.contains('open')){ closeFileViewer(); return; }
+    if(ov.classList.contains('open')) closeSettings();
+  }
+  if((e.metaKey || e.ctrlKey) && e.key === ','){ e.preventDefault(); openSettings(); }
+});
 </script>
 </body>
 </html>
