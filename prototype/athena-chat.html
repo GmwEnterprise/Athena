@@ -54,6 +54,7 @@
   --elev-ring: 0 0 0 1px var(--border);
   --elev-raised: 0 4px 24px rgba(0, 0, 0, 0.05);
   --focus-ring: 0 0 0 2px var(--accent-active);
+  --tag-bg-soft: #e4ecf5;
   --motion-fast: 150ms;
   --motion-base: 200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -285,8 +286,11 @@ input, textarea { font: inherit; color: inherit; }
 .composer-textarea { width: 100%; border: none; outline: none; background: none; resize: none; padding: 14px 16px 4px; font-family: var(--font-body); font-size: 14px; line-height: 1.55; color: var(--fg); min-height: 28px; max-height: 180px; }
 .composer-textarea::placeholder { color: var(--meta); }
 
-.attach-preview { display: none; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 12px 0; }
+.attach-preview { display: none; flex-direction: column; gap: 6px; padding: 10px 12px 0; }
 .attach-preview.has-files { display: flex; }
+.attach-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.attach-row.images { gap: 8px; }
+.attach-divider { height: 1px; background: var(--border-soft); margin: 1px 0; }
 .attach-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 240px; height: 28px; padding: 0 3px 0 9px; background: var(--panel-2); border-radius: var(--radius-sm); font-size: 12px; color: var(--fg-2); }
 .attach-chip > svg { width: 13px; height: 13px; opacity: 0.7; flex: none; }
 .attach-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; }
@@ -456,6 +460,7 @@ input, textarea { font: inherit; color: inherit; }
   --win-close-hover: #8a3a30;
   --win-close-fg: #faf9f5;
   --elev-raised: 0 4px 24px rgba(0,0,0,0.28);
+  --tag-bg-soft: #1c2a3d;
 }
 [data-theme="dark"] ::selection { background: rgba(91,142,192,0.32); }
 [data-theme="dark"] .history::-webkit-scrollbar-thumb,
@@ -653,6 +658,40 @@ input, textarea { font: inherit; color: inherit; }
 
 .fv-toast { position: absolute; top: 12px; right: 12px; background: var(--accent); color: var(--accent-on); font-size: 11.5px; font-weight: 500; padding: 6px 12px; border-radius: var(--radius-sm); box-shadow: var(--elev-raised); opacity: 0; transform: translateY(-4px); transition: opacity var(--motion-fast), transform var(--motion-fast); pointer-events: none; z-index: 5; }
 .fv-toast.show { opacity: 1; transform: none; }
+
+/* ── File viewer · reader mode (kami 纸质阅读) ─────────────────── */
+.fv-body.reader-mode { background: var(--bg); }
+.fv-body.reader-mode .fv-scroller::-webkit-scrollbar-thumb { background: rgba(20,20,19,0.14); border: 3px solid var(--bg); }
+.fv-body.reader-mode .fv-scroller::-webkit-scrollbar-thumb:hover { background: rgba(20,20,19,0.26); }
+.fv-reader {
+  font-family: var(--font-body); color: var(--fg); background: var(--bg);
+  max-width: 720px; margin: 0 auto; padding: 52px 64px 88px;
+  font-size: 16.5px; line-height: 1.82; letter-spacing: 0.008em; min-width: 0;
+}
+.fv-reader .r-h { font-family: var(--font-display); font-weight: 500; color: var(--fg); }
+.fv-reader .r-h1 { font-size: 34px; line-height: 1.16; letter-spacing: -0.012em; margin: 0 0 6px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.fv-reader .r-h2 { font-size: 22px; line-height: 1.3; margin: 42px 0 14px; display: flex; align-items: baseline; gap: 10px; }
+.fv-reader .r-h2::before { content: ""; width: 16px; height: 2px; background: var(--accent); flex: none; transform: translateY(-5px); }
+.fv-reader .r-h3 { font-size: 18px; margin: 30px 0 10px; color: var(--fg-2); }
+.fv-reader .r-p { margin: 0 0 18px; }
+.fv-reader .r-p-first:first-letter {
+  font-family: var(--font-display); font-size: 3.3em; line-height: 0.8;
+  float: left; padding: 6px 12px 0 0; color: var(--accent); font-weight: 500;
+}
+.fv-reader .r-ul, .fv-reader .r-ol { margin: 0 0 18px; padding: 0; list-style: none; }
+.fv-reader .r-ul li { position: relative; padding-left: 20px; margin-bottom: 7px; }
+.fv-reader .r-ul li::before { content: "–"; position: absolute; left: 0; color: var(--accent); }
+.fv-reader .r-ol { counter-reset: ri; }
+.fv-reader .r-ol li { counter-increment: ri; position: relative; padding-left: 26px; margin-bottom: 7px; }
+.fv-reader .r-ol li::before { content: counter(ri) "."; position: absolute; left: 0; color: var(--accent); font-family: var(--font-mono); font-size: 0.84em; font-variant-numeric: tabular-nums; }
+.fv-reader .r-quote { border-left: 2px solid var(--accent); margin: 0 0 22px; padding: 5px 0 5px 18px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+.fv-reader .r-ic { font-family: var(--font-mono); font-size: 0.86em; background: var(--tag-bg-soft); color: var(--accent); padding: 1px 6px; border-radius: 4px; }
+.fv-reader strong { font-weight: 500; }
+.fv-reader .r-pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 15px 18px; margin: 0 0 22px; overflow-x: auto; }
+.fv-reader .r-pre code { font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--fg-2); white-space: pre; }
+.fv-reader .r-hr { border: none; height: 1px; background: var(--border); margin: 36px auto; width: 38%; }
+[data-theme="dark"] .fv-body.reader-mode .fv-scroller::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.12); border-color: var(--bg); }
+[data-theme="dark"] .fv-body.reader-mode .fv-scroller::-webkit-scrollbar-thumb:hover { background: rgba(250,249,245,0.22); }
 
 [data-theme="dark"] .fv-overlay { background: rgba(0,0,0,0.64); }
 [data-theme="dark"] .fv-dialog { box-shadow: 0 20px 64px rgba(0,0,0,0.55); }
@@ -1113,6 +1152,43 @@ input, textarea { font: inherit; color: inherit; }
             <p>要不要顺手把 <code class="inline">App.tsx</code> 顶栏加个切换按钮？</p>
           </div>
         </div>
+
+        <div class="msg msg-user">
+          <div class="bubble">顺便帮我读一下 <code>docs/design-tokens.md</code>，确认暗色变量是不是都齐了，跟刚才改的 Card 对得上。</div>
+        </div>
+
+        <div class="msg msg-model">
+          <div class="model-head">
+            <div class="model-avatar">A</div>
+            <div><div class="model-name">GLM-5.2</div><div class="model-role">reading</div></div>
+          </div>
+
+          <div class="thinking" id="think3">
+            <button class="thinking-toggle" onclick="toggleThink('think3')">
+              <svg class="chev" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span class="think-label">思考过程</span>
+              <span class="think-dots">···</span>
+              <span class="think-meta">2.0s · 0.4k tok</span>
+            </button>
+            <div class="thinking-body">
+              <p>这是 Markdown 文档、不是代码——用阅读视图渲染更直观，层级和引用关系一眼能看清。</p>
+              <p>重点核对三处：暗色 <code>--accent</code> 取值、<code>--bg</code> 是否切到暖炭灰、token 命名有没有改动。</p>
+            </div>
+          </div>
+
+          <div class="tool fv-tool" onclick="openFileViewer('tokens-read')">
+            <div class="tool-head">
+              <span class="tool-badge read"><svg viewBox="0 0 12 12"><path d="M1.5 2.5a1 1 0 011-1h3l1 1h3a1 1 0 011 1v6a1 1 0 01-1 1H2.5a1 1 0 01-1-1v-7z" fill="none" stroke="currentColor" stroke-width="1"/></svg>read</span>
+              <span class="tool-target"><span class="path">docs/</span>design-tokens.md</span>
+              <span class="tool-status"><span class="ok">✓ 34 行 · MD</span><svg class="fv-open-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5H3a.5.5 0 00-.5.5V9a.5.5 0 00.5.5h6a.5.5 0 00.5-.5V7.5"/><path d="M7 2.5h2.5V5"/><path d="M5.5 6.5L9.5 2.5"/></svg></span>
+            </div>
+          </div>
+
+          <div class="md" style="margin-top:14px;">
+            <p>读完了。文档里的暗色分支跟我们的改动一致——<code class="inline">--accent</code> 提亮成 <code class="inline">#5b8ec0</code>，<code class="inline">--bg</code> 切到暖炭灰，token 名字没变。Card 用的 <code class="inline">dark:bg-gray-900</code> 虽是 Tailwind 工具类、没走 CSS 变量，但色值跟文档暗色面板同档，可以接受。</p>
+            <p>一个小缺口：文档 §暗色模式 漏列了 <code class="inline">--border</code> 的暗色取值，要我顺手补一行吗？</p>
+          </div>
+        </div>
       </div>
 
       <div class="composer-wrap">
@@ -1531,6 +1607,7 @@ input, textarea { font: inherit; color: inherit; }
     </header>
     <div class="fv-toolbar">
       <div class="fv-tabs" id="fvTabs">
+        <span class="fv-tab" data-mode="reader" onclick="switchFileView('reader')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h3.5a1.5 1.5 0 011.5 1.5v6a1.3 1.3 0 00-1.3-1.3H2v-6.2z"/><path d="M12 3.5H8.5A1.5 1.5 0 007 5v6a1.3 1.3 0 011.3-1.3H12v-6.2z"/></svg>阅读</span>
         <span class="fv-tab active" data-mode="source" onclick="switchFileView('source')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3L2 7l3 4M9 3l3 4-3 4"/></svg>源文件</span>
         <span class="fv-tab" data-mode="diff" onclick="switchFileView('diff')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h4M4 2v4M9 2v6M8 9l1.5 3 1.5-3"/></svg>差异<span class="fv-tab-badge" id="fvDiffBadge">±0</span></span>
       </div>
@@ -1600,14 +1677,12 @@ function renderAttachments() {
   if (attachedFiles.length === 0) { container.classList.remove('has-files'); container.innerHTML = ''; return; }
   container.classList.add('has-files');
   container.innerHTML = '';
-  attachedFiles.forEach(item => {
-    if (item.isImage) {
-      const el = document.createElement('div');
-      el.className = 'attach-thumb';
-      el.innerHTML = `<img src="${item.url}" alt=""><div class="remove" title="移除">${X_SVG}</div>`;
-      el.querySelector('.remove').addEventListener('click', () => removeAttachment(item.id));
-      container.appendChild(el);
-    } else {
+  const files = attachedFiles.filter(f => !f.isImage);
+  const images = attachedFiles.filter(f => f.isImage);
+  if (files.length) {
+    const row = document.createElement('div');
+    row.className = 'attach-row files';
+    files.forEach(item => {
       const el = document.createElement('div');
       el.className = 'attach-chip';
       const icon = item.kind === 'text'
@@ -1615,9 +1690,27 @@ function renderAttachments() {
         : (item.file.type.startsWith('video/') ? VIDEO_ICON : AUDIO_ICON);
       el.innerHTML = icon + `<span class="name" title="${item.file.name}">${item.file.name}</span><div class="remove" title="移除">${X_SVG}</div>`;
       el.querySelector('.remove').addEventListener('click', () => removeAttachment(item.id));
-      container.appendChild(el);
-    }
-  });
+      row.appendChild(el);
+    });
+    container.appendChild(row);
+  }
+  if (files.length && images.length) {
+    const divider = document.createElement('div');
+    divider.className = 'attach-divider';
+    container.appendChild(divider);
+  }
+  if (images.length) {
+    const row = document.createElement('div');
+    row.className = 'attach-row images';
+    images.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'attach-thumb';
+      el.innerHTML = `<img src="${item.url}" alt=""><div class="remove" title="移除">${X_SVG}</div>`;
+      el.querySelector('.remove').addEventListener('click', () => removeAttachment(item.id));
+      row.appendChild(el);
+    });
+    container.appendChild(row);
+  }
 }
 document.getElementById('textFileInput').addEventListener('change', e => { addFiles(e.target.files, 'text'); e.target.value = ''; });
 document.getElementById('mediaFileInput').addEventListener('change', e => { addFiles(e.target.files, 'media'); e.target.value = ''; });
@@ -1959,6 +2052,41 @@ const USETHEME_DIFF = (function(){
   return [{ head: '@@ -0,0 +1,' + lines.length + ' @@', lines }];
 })();
 
+const TOKENS_MD = `# 设计变量 · Design Tokens
+
+本项目配色与排版基于 **kami（紙）** 编辑型系统：暖羊皮纸画布、单一墨蓝强调色、衬线承载层级。本文档记录对外暴露的 CSS 变量与使用约束。
+
+> 单一强调色覆盖面积不得超过任何界面区域的 5%。超过即沦为装饰，克制随之瓦解。
+
+## 色彩
+
+- \`--bg\` — 羊皮纸 \`#f5f4ed\`，页面底色，永不使用纯白
+- \`--surface\` — 象牙 \`#faf9f5\`，卡片与抬升容器
+- \`--accent\` — 墨蓝 \`#1B365D\`，唯一彩色，用于主操作与章节编号
+- \`--fg\` — 近黑 \`#141413\`，正文，带轻微橄榄暖意
+
+所有中性灰均为暖灰（R ≈ G > B），严禁出现冷蓝灰。
+
+## 排版
+
+正文衬线锁定字重 500，无加粗、无斜体。层级由字号承担，行高区间保持在 \`1.40 – 1.55\`。
+
+\`\`\`css
+:root {
+  --font-body: "TsangerJinKai02", "Source Han Serif SC", serif;
+  --text-base: 16px;
+  --leading-body: 1.55;
+}
+\`\`\`
+
+## 暗色模式
+
+暗色主题将羊皮纸替换为暖炭灰 \`#141413\`，墨蓝提亮为 \`#5b8ec0\` 以保证对比度。所有 token 名称保持不变，仅切换取值——组件层无需感知主题。
+
+---
+
+最后更新：2026-06-12 · 维护者：设计系统组`;
+
 const FILE_DATA = {
   'card-read': {
     dir: 'src/components/', name: 'Card.tsx', lang: 'tsx', langLabel: 'TypeScript JSX',
@@ -1972,6 +2100,10 @@ const FILE_DATA = {
     dir: 'src/hooks/', name: 'useTheme.ts', lang: 'ts', langLabel: 'TypeScript',
     size: '1.1 kB', mode: 'diff', added: USETHEME_DIFF[0].lines.length, removed: 0,
     source: USETHEME_SOURCE, diff: USETHEME_DIFF,
+  },
+  'tokens-read': {
+    dir: 'docs/', name: 'design-tokens.md', lang: 'md', langLabel: 'Markdown',
+    size: '1.2 kB', mode: 'reader', reader: true, source: TOKENS_MD,
   },
 };
 
@@ -1992,6 +2124,56 @@ function hl(line){
   s = s.replace(/(&lt;\/?)([A-Za-z][\w.]*)/g, '$1<span class="tok-tag">$2</span>');
   s = s.replace(/\u0000(\d+)\u0001/g, (_, i) => slots[+i]);
   return s.length ? s : '&nbsp;';
+}
+
+function renderReader(md){
+  const inline = (s) => {
+    let t = escHtml(s);
+    const code = [];
+    t = t.replace(/`([^`]+)`/g, (_, c) => { code.push(c); return '\u0002' + (code.length - 1) + '\u0002'; });
+    t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    t = t.replace(/\u0002(\d+)\u0002/g, (_, n) => '<code class="r-ic">' + code[+n] + '</code>');
+    return t;
+  };
+  const lines = md.split('\n');
+  let out = '', i = 0, firstP = true;
+  while (i < lines.length) {
+    let ln = lines[i];
+    if (/^```/.test(ln)) {
+      const buf = []; i++;
+      while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i++; }
+      i++;
+      out += '<pre class="r-pre"><code>' + escHtml(buf.join('\n')) + '</code></pre>';
+      continue;
+    }
+    if (/^\s*([-*_])\1{2,}\s*$/.test(ln)) { out += '<hr class="r-hr">'; i++; continue; }
+    let hm = ln.match(/^(#{1,6})\s+(.*)$/);
+    if (hm) { out += '<h' + hm[1].length + ' class="r-h r-h' + hm[1].length + '">' + inline(hm[2]) + '</h' + hm[1].length + '>'; i++; continue; }
+    if (/^>\s?/.test(ln)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i++; }
+      out += '<blockquote class="r-quote">' + inline(buf.join(' ')) + '</blockquote>';
+      continue;
+    }
+    if (/^\s*[-*+]\s+/.test(ln)) {
+      const items = [];
+      while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) { items.push(inline(lines[i].replace(/^\s*[-*+]\s+/, ''))); i++; }
+      out += '<ul class="r-ul">' + items.map(x => '<li>' + x + '</li>').join('') + '</ul>';
+      continue;
+    }
+    if (/^\s*\d+\.\s+/.test(ln)) {
+      const items = [];
+      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) { items.push(inline(lines[i].replace(/^\s*\d+\.\s+/, ''))); i++; }
+      out += '<ol class="r-ol">' + items.map(x => '<li>' + x + '</li>').join('') + '</ol>';
+      continue;
+    }
+    if (/^\s*$/.test(ln)) { i++; continue; }
+    const buf = [];
+    while (i < lines.length && !/^\s*$/.test(lines[i]) && !/^(#{1,6}\s|>\s?|\s*[-*+]\s+|\s*\d+\.\s+|```)/.test(lines[i]) && !/^\s*([-*_])\1{2,}\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
+    const cls = firstP ? 'r-p r-p-first' : 'r-p'; firstP = false;
+    out += '<p class="' + cls + '">' + inline(buf.join(' ')) + '</p>';
+  }
+  return out;
 }
 
 function renderSource(src){
@@ -2024,7 +2206,11 @@ function openFileViewer(key, opts){
   document.getElementById('fvSize').textContent = d.size;
   document.getElementById('fvLines').textContent = d.source.split('\n').length;
   document.querySelectorAll('#fvTabs .fv-tab').forEach(t => {
-    t.style.display = (t.dataset.mode === 'diff' && !hasDiff) ? 'none' : '';
+    const m = t.dataset.mode;
+    let show = true;
+    if(m === 'diff' && !hasDiff) show = false;
+    if(m === 'reader' && !d.reader) show = false;
+    t.style.display = show ? '' : 'none';
   });
   const badge = document.getElementById('fvDiffBadge');
   if(hasDiff){ badge.textContent = '+' + d.added + ' / −' + d.removed; }
@@ -2033,6 +2219,7 @@ function openFileViewer(key, opts){
     : '';
   let mode = (opts && opts.mode) ? opts.mode : d.mode;
   if(mode === 'diff' && !hasDiff) mode = 'source';
+  if(mode === 'reader' && !d.reader) mode = 'source';
   switchFileView(mode);
   document.getElementById('fvOverlay').classList.add('open');
 }
@@ -2040,13 +2227,24 @@ function openFileViewer(key, opts){
 function switchFileView(mode){
   if(!fvCurrent) return;
   const hasDiff = !!fvCurrent.diff;
+  const hasReader = !!fvCurrent.reader;
   if(mode === 'diff' && !hasDiff) mode = 'source';
+  if(mode === 'reader' && !hasReader) mode = 'source';
   fvActiveMode = mode;
   document.querySelectorAll('#fvTabs .fv-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-  document.getElementById('fvModeMeta').textContent = mode === 'diff' ? 'Unified diff · 旧 → 新' : '源文件视图';
+  const metaMap = { source: '源文件视图', diff: 'Unified diff · 旧 → 新', reader: '纸质阅读视图' };
+  document.getElementById('fvModeMeta').textContent = metaMap[mode] || '源文件视图';
   const box = document.getElementById('fvCode');
-  box.className = mode === 'diff' ? 'fv-diff' : 'fv-code';
-  box.innerHTML = mode === 'diff' ? renderDiff(fvCurrent.diff) : renderSource(fvCurrent.source);
+  const body = box.closest('.fv-body');
+  if(mode === 'reader'){
+    body.classList.add('reader-mode');
+    box.className = 'fv-reader';
+    box.innerHTML = renderReader(fvCurrent.source);
+  } else {
+    body.classList.remove('reader-mode');
+    box.className = mode === 'diff' ? 'fv-diff' : 'fv-code';
+    box.innerHTML = mode === 'diff' ? renderDiff(fvCurrent.diff) : renderSource(fvCurrent.source);
+  }
   document.getElementById('fvScroller').scrollTop = 0;
   document.getElementById('fvScroller').scrollLeft = 0;
 }
