@@ -62,8 +62,8 @@
   --panel-2: #e8e6dc;
   --code-bg: #141413;
   --code-fg: #faf9f5;
-  --user-bubble: #141413;
-  --user-bubble-fg: #faf9f5;
+  --user-bubble: #e4ecf5;
+  --user-bubble-fg: #141413;
   --win-btn-hover: rgba(20,20,19,0.06);
   --win-close-hover: #8a3a30;
   --win-close-fg: #faf9f5;
@@ -189,6 +189,16 @@ input, textarea { font: inherit; color: inherit; }
 .chat-status .toggle-status { display: flex; align-items: center; gap: 5px; padding: 3px 9px; height: 24px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--fg-2); font-size: 11px; transition: background var(--motion-fast); }
 .chat-status .toggle-status:hover { background: var(--panel-2); }
 .app.status-hidden .toggle-status { background: transparent; color: var(--meta); border-color: transparent; }
+.chat-status .openwith { position: relative; display: inline-flex; align-items: stretch; }
+.chat-status .openwith-btn { display: flex; align-items: center; gap: 3px; height: 24px; padding: 3px 5px 3px 6px; border: 1px solid var(--border); border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm); background: var(--panel); color: var(--fg-2); font-size: 11px; }
+.chat-status .openwith-btn:hover { background: var(--panel-2); }
+.chat-status .openwith-btn .ow-icon { display: inline-flex; color: var(--accent); }
+.chat-status .openwith-btn .ow-icon svg { width: 13px; height: 13px; }
+.chat-status .openwith-btn .chev { display: inline-flex; color: var(--meta); }
+.chat-status .openwith-btn .chev svg { width: 9px; height: 9px; }
+.chat-status .openwith-go { display: flex; align-items: center; height: 24px; padding: 3px 10px; border: 1px solid var(--border); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; background: var(--panel); color: var(--fg-2); font-size: 11px; transition: background var(--motion-fast), color var(--motion-fast); }
+.chat-status .openwith-go:hover { background: var(--panel-2); color: var(--accent); }
+.chat-status .openwith-menu { bottom: auto; top: calc(100% + 6px); left: auto; right: 0; }
 
 .chat-stream { flex: 1; min-height: 0; overflow-y: auto; padding: 28px 0 12px; scroll-behavior: smooth; }
 .chat-stream::-webkit-scrollbar { width: 10px; }
@@ -198,7 +208,7 @@ input, textarea { font: inherit; color: inherit; }
 .msg { padding: 0 40px; margin-bottom: 22px; max-width: 920px; margin-left: auto; margin-right: auto; }
 .msg-user { display: flex; justify-content: flex-end; }
 .msg-user .bubble { max-width: 72%; background: var(--user-bubble); color: var(--user-bubble-fg); padding: 11px 15px; border-radius: 14px 14px 4px 14px; font-size: 14px; line-height: 1.55; box-shadow: none; }
-.msg-user .bubble code { font-family: var(--font-mono); font-size: 12.5px; background: rgba(250,249,245,0.14); padding: 1px 5px; border-radius: 4px; }
+.msg-user .bubble code { font-family: var(--font-mono); font-size: 12.5px; background: #d0dce9; padding: 1px 5px; border-radius: 4px; }
 
 .model-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
 .model-avatar { width: 26px; height: 26px; border-radius: var(--radius-sm); background: var(--accent); display: grid; place-items: center; color: var(--accent-on); font-weight: 500; font-size: 12px; flex: none; }
@@ -220,9 +230,9 @@ input, textarea { font: inherit; color: inherit; }
 .md li::marker { color: var(--meta); }
 .md blockquote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; color: var(--muted); background: #eef2f7; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .md code.inline { font-family: var(--font-mono); font-size: 12.5px; background: var(--panel-2); color: var(--fg); padding: 1.5px 6px; border-radius: 4px; border: 1px solid var(--border); }
-.md pre { background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; font-family: var(--font-mono); }
+.md pre { background: var(--surface); color: var(--fg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; font-family: var(--font-mono); }
 .md pre::-webkit-scrollbar { height: 8px; }
-.md pre::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.18); border-radius: 4px; }
+.md pre::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.14); border-radius: 4px; }
 .md pre code { font-family: inherit; background: none; padding: 0; color: inherit; }
 
 .tok-kw { color: #a9c3e0; font-weight: 500; }
@@ -232,7 +242,17 @@ input, textarea { font: inherit; color: inherit; }
 .tok-fn { color: #9ec0e0; }
 .tok-tag { color: #a9c3e0; }
 .tok-attr { color: #e0c489; }
-.ln { display: inline-block; width: 28px; margin-left: -16px; padding-right: 12px; color: rgba(250,249,245,0.32); text-align: right; user-select: none; }
+.ln { display: inline-block; width: 28px; margin-left: -16px; padding-right: 12px; color: rgba(20,20,19,0.30); text-align: right; user-select: none; }
+
+/* ── Light syntax for inline message code blocks (.md pre) ──────────
+   Global .tok-* above stay dark-tuned for the always-dark file viewer. */
+.md pre .tok-kw { color: var(--accent); font-weight: 500; }
+.md pre .tok-str { color: var(--success); }
+.md pre .tok-num { color: var(--warn); }
+.md pre .tok-com { color: #8a8880; }
+.md pre .tok-fn { color: var(--accent-light); }
+.md pre .tok-tag { color: var(--accent); }
+.md pre .tok-attr { color: var(--warn); }
 
 .thinking { margin: 10px 0 4px -2px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
 .thinking-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--muted); transition: background var(--motion-fast); }
@@ -318,7 +338,7 @@ input, textarea { font: inherit; color: inherit; }
 .ctx-ring .ctx-label { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 9px; font-weight: 500; color: var(--fg); }
 .cbtn.ctx-btn { padding: 0 8px; }
 .cbtn.ctx-btn:hover .ctx-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
-.ctx-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--user-bubble-fg); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--motion-fast), transform var(--motion-fast); font-family: var(--font-mono); }
+.ctx-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--surface); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--motion-fast), transform var(--motion-fast); font-family: var(--font-mono); }
 .ctx-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--fg); }
 
 .send-btn { width: 32px; height: 32px; display: grid; place-items: center; background: var(--accent); color: var(--accent-on); border-radius: var(--radius-sm); box-shadow: none; transition: opacity var(--motion-fast), transform var(--motion-fast); }
@@ -482,6 +502,16 @@ input, textarea { font: inherit; color: inherit; }
 [data-theme="dark"] .change-status.A { background: #222a1c; color: var(--success); }
 [data-theme="dark"] .change-status.D { background: #332420; color: var(--danger); }
 [data-theme="dark"] .ctx-tip { color: var(--bg); }
+[data-theme="dark"] .msg-user .bubble code { background: rgba(250,249,245,0.14); }
+[data-theme="dark"] .md pre::-webkit-scrollbar-thumb { background: rgba(250,249,245,0.18); }
+[data-theme="dark"] .ln { color: rgba(250,249,245,0.32); }
+[data-theme="dark"] .md pre .tok-kw { color: #a9c3e0; }
+[data-theme="dark"] .md pre .tok-str { color: #c2cfa0; }
+[data-theme="dark"] .md pre .tok-num { color: #e0c489; }
+[data-theme="dark"] .md pre .tok-com { color: #8a8a86; }
+[data-theme="dark"] .md pre .tok-fn { color: #9ec0e0; }
+[data-theme="dark"] .md pre .tok-tag { color: #a9c3e0; }
+[data-theme="dark"] .md pre .tok-attr { color: #e0c489; }
 #appMenuThemeIcon .ic-sun, #footThemeBtn .ic-sun { display: none; }
 [data-theme="dark"] #appMenuThemeIcon .ic-moon, [data-theme="dark"] #footThemeBtn .ic-moon { display: none; }
 [data-theme="dark"] #appMenuThemeIcon .ic-sun, [data-theme="dark"] #footThemeBtn .ic-sun { display: block; }
@@ -750,10 +780,6 @@ input, textarea { font: inherit; color: inherit; }
           <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           <span class="nav-label">新建任务</span>
           <span class="nav-kbd">⌘N</span>
-        </button>
-        <button class="nav-item">
-          <svg viewBox="0 0 16 16"><path d="M2 4a1 1 0 011-1h3l2 2h5a1 1 0 011 1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
-          <span class="nav-label">打开工作区</span>
         </button>
         <button class="nav-item">
           <svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L2.2 5.8l4-.6L8 1.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
@@ -1032,6 +1058,26 @@ input, textarea { font: inherit; color: inherit; }
           <span>4 files changed</span>
         </div>
         <div class="spacer"></div>
+        <div class="openwith">
+          <button class="cbtn openwith-btn" aria-expanded="false" aria-haspopup="true" id="openWithBtn" title="选择打开方式" onclick="toggleMenu('openWithMenu', this)">
+            <span class="ow-icon" id="openWithIcon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3L1.5 6.5 4.5 10"/><path d="M8.5 3L11.5 6.5 8.5 10"/><path d="M7.6 2L5.4 11"/></svg></span>
+            <span class="chev"><svg viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+          </button>
+          <button class="openwith-go" id="openWithGo" title="使用所选应用打开" onclick="openWithApp()">打开</button>
+          <div class="menu openwith-menu" id="openWithMenu" role="menu">
+            <div class="menu-section-label">打开方式</div>
+            <div class="menu-item active" role="menuitem" data-app="vscode" onclick="pickOpenWith(this,'vscode')">
+              <div class="mi-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3L1.5 6.5 4.5 10"/><path d="M8.5 3L11.5 6.5 8.5 10"/><path d="M7.6 2L5.4 11"/></svg></div>
+              <div class="mi-main"><div class="mi-title">Visual Studio Code</div><div class="mi-sub">在编辑器中打开项目</div></div>
+              <span class="mi-check"><svg viewBox="0 0 14 14"><path d="M3 7.5l3 3 5-5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="menu-item" role="menuitem" data-app="explorer" onclick="pickOpenWith(this,'explorer')">
+              <div class="mi-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path d="M1.5 3.5a1 1 0 011-1h2.6l1.2 1.2H10a1 1 0 011 1V9a1 1 0 01-1 1H2.5a1 1 0 01-1-1V3.5z"/></svg></div>
+              <div class="mi-main"><div class="mi-title">文件资源管理器</div><div class="mi-sub">在文件夹中显示</div></div>
+              <span class="mi-check"><svg viewBox="0 0 14 14"><path d="M3 7.5l3 3 5-5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+        </div>
         <button class="toggle-status" id="btnStatus">
           <svg viewBox="0 0 14 14"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M9.5 1.5v11" stroke="currentColor" stroke-width="1.1"/></svg>
           <span id="statusBtnLabel">状态区</span>
@@ -1644,6 +1690,9 @@ function toggleMenu(menuId, btn){ const menu = document.getElementById(menuId); 
 document.addEventListener('click', (e) => { if(!e.target.closest('.cbtn') && !e.target.closest('.menu')){ document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); document.querySelectorAll('.cbtn[aria-expanded]').forEach(b => b.setAttribute('aria-expanded','false')); } });
 function pickModel(el, name){ document.querySelectorAll('#modelMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.querySelector('#modelBtn span:nth-of-type(1)').textContent = name; document.getElementById('modelMenu').classList.remove('open'); document.getElementById('modelBtn').setAttribute('aria-expanded','false'); }
 function pickThink(el, val, label){ document.querySelectorAll('#thinkMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.getElementById('thinkLabel').textContent = label; document.getElementById('thinkMenu').classList.remove('open'); document.getElementById('thinkBtn').setAttribute('aria-expanded','false'); }
+const OPEN_WITH_ICONS = { vscode: '<svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3L1.5 6.5 4.5 10"/><path d="M8.5 3L11.5 6.5 8.5 10"/><path d="M7.6 2L5.4 11"/></svg>', explorer: '<svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path d="M1.5 3.5a1 1 0 011-1h2.6l1.2 1.2H10a1 1 0 011 1V9a1 1 0 01-1 1H2.5a1 1 0 01-1-1V3.5z"/></svg>' };
+function pickOpenWith(el, app){ document.querySelectorAll('#openWithMenu .menu-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.getElementById('openWithIcon').innerHTML = OPEN_WITH_ICONS[app] || OPEN_WITH_ICONS.vscode; document.getElementById('openWithMenu').classList.remove('open'); document.getElementById('openWithBtn').setAttribute('aria-expanded','false'); }
+function openWithApp(){ const active = document.querySelector('#openWithMenu .menu-item.active'); const app = active ? active.dataset.app : 'vscode'; const go = document.getElementById('openWithGo'); document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); document.querySelectorAll('.cbtn[aria-expanded]').forEach(b => b.setAttribute('aria-expanded','false')); go.style.transform = 'scale(0.94)'; setTimeout(() => go.style.transform = '', 120); }
 function flashSend(btn){ btn.style.transform = 'scale(0.9)'; setTimeout(() => btn.style.transform = '', 120); }
 function flashWin(btn){ btn.style.background = btn.classList.contains('close') ? 'var(--win-close-hover)' : 'var(--win-btn-hover)'; setTimeout(() => btn.style.background = '', 200); }
 const input = document.getElementById('input');
